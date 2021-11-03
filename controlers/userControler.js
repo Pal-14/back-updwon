@@ -19,11 +19,7 @@ function readToken(req){
     else return null;
 }
 
-
-
 const UserControler = {
-
-
 
     /* BONUS MIDDLEWARES IF NEED TO LOG BODY OR WANT TO TRY ADMIN SYSTEM */
     logBody(req, res, next){
@@ -59,9 +55,8 @@ const UserControler = {
 
     testPrivateController(req, res, next) {
         console.log(`USER FIRST NAME IS : ${req.user.firstname}`);
-        res.send("Test Private Controller was successsfull");
+        res.send("Test Virginie Controler was successfull ! lets go !");
     },
-
 
      /* ************* PUBLIC ROUTES **************** */
 

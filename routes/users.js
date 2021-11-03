@@ -11,6 +11,8 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/virgitest', UserControler.isUser, UserControler.testPrivateController)
+
 router.post('/login', UserControler.login);
 router.post('/signup', UserControler.signup);
 
