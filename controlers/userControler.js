@@ -136,7 +136,7 @@ const UserControler = {
                                 (err,token) => {
                                     if (err) console.log(err);
                                     console.log(token);
-                                    res.status(200).send({token,success:true, message:"Signup successfull my friends"});
+                                    res.status(200).send({token, success:true, message:"Signup successfull my friends"});
                                 }
                             );
                         })
