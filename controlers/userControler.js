@@ -88,7 +88,7 @@ const UserControler = {
                 }
                 jwt.sign({_id:user._id}, JWT_SECRET, (err, token)=>{
                     if (err) console.log(err);
-                    res.status(200).send({token});
+                    res.status(200).send({token:token, success:true, message:"Login successfull my friends"});
                 });
             })
             .catch((err)=> handleServerError(err, res));
@@ -136,7 +136,7 @@ const UserControler = {
                                 (err,token) => {
                                     if (err) console.log(err);
                                     console.log(token);
-                                    res.status(200).send({token});
+                                    res.status(200).send({token,success:true, message:"Signup successfull my friends"});
                                 }
                             );
                         })
