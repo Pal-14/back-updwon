@@ -12,8 +12,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/virgitest', UserControler.isUser, UserControler.testPrivateController)
+router.get('/checkToken', UserControler.isUser, UserControler.getInfos)
 
 router.post('/login', UserControler.login);
 router.post('/signup', UserControler.signup);
+
+
 
 module.exports = router;

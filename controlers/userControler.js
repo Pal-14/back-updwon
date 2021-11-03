@@ -28,7 +28,7 @@ const UserControler = {
     },
 
     isAdmin(req, res, next){
-        if (req.user.role === "admin"){
+        if (!req.user.admin){
             return res.send(200);
         }
         return res.send(403)
@@ -55,7 +55,7 @@ const UserControler = {
 
     testPrivateController(req, res, next) {
         console.log(`USER FIRST NAME IS : ${req.user.firstname}`);
-        res.send("Test Virginie Controler was successfull ! lets go !");
+        res.send({success:true, message:"Test Virginie Controler was successfull ! lets go !"});
     },
 
      /* ************* PUBLIC ROUTES **************** */
@@ -76,7 +76,7 @@ const UserControler = {
                     console.log("email incorrect");
                     return res 
                         .status(404)
-                        .send("Informations de connexion incorrectes");
+                        .send({success:false, message:"Informations de connexion incorrectes"});
                 }
 
                 let passwordsDoMatch = bcrypt.compareSync(password, user.password);
@@ -84,7 +84,7 @@ const UserControler = {
                     console.log("incorrect password")
                     return res
                         .status(404)
-                        .send("Informations de connexion incorrectes");
+                        .send({success:false, message:"Informations de connexion incorrectes"});
                 }
                 jwt.sign({_id:user._id}, JWT_SECRET, (err, token)=>{
                     if (err) console.log(err);
@@ -144,7 +144,7 @@ const UserControler = {
                 }
                 return res
                     .status(400)
-                    .send("Un compte est déjà enregistré avec cette adresse e-mail");
+                    .send({success:false, message:"Un compte est déjà enregistré avec cette adresse e-mail"});
             })
             .catch((err) => handleServerError(err, res));
     },
