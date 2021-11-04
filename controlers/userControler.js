@@ -36,31 +36,7 @@ const UserControler = {
   },
 
   /* MIDDLEWARE TO CHECK IF USER CAN ACCESS PRIVATE ROUTES */
-  isUser(req, res, next) {
-    let token = readToken(req, res);
-    console.log(token, "test", JWT_SECRET);
-    if (token === null)
-      return res
-        .status(401)
-        .send({ succes: false, message: "Pas de connexion" });
-    jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
-      console.log(err, decodedToken);
-      if (err)
-        return res
-          .status(400)
-          .send({ succes: false, message: "Erreur sur le Token" });
-      let _id = decodedToken._id;
-      UserModel.findOne({ _id: _id }).then((dbResponse) => {
-        if (dbResponse === null)
-          return res
-            .status(404)
-            .send({ succes: false, message: "Pas d'utilisateur associé" });
-        req.user = dbResponse;
-        req._id = decodedToken._id;
-        next();
-      });
-    });
-  },
+  
 
   getInfos(req, res, next) {
     return res
@@ -94,7 +70,7 @@ const UserControler = {
       .then((user) => {
         if (user === null) {
           console.log("email incorrect");
-          return res.status(404).send({
+          return res.status(403).send({
             success: false,
             message: "Informations de connexion incorrectes",
           });
@@ -103,7 +79,7 @@ const UserControler = {
         let passwordsDoMatch = bcrypt.compareSync(password, user.password);
         if (!passwordsDoMatch) {
           console.log("incorrect password");
-          return res.status(404).send({
+          return res.status(401).send({
             success: false,
             message: "Informations de connexion incorrectes",
           });
@@ -152,7 +128,7 @@ const UserControler = {
             lastName: lastName,
             email: email,
             password: hashedPassword,
-            stableCoins: 0,
+            stableCoin: 0,
           })
             .then((newUser) => {
               jwt.sign(
@@ -211,27 +187,28 @@ const UserControler = {
 
 
   editUserCoin(req, res, next) {
-    let { operationValue } = req.body;
-    if (!operationValue) {
+    let { operationValue } = (req.body);
+    let userCoinBalanceAfterOperation = req.user.stableCoin + operationValue
+    console.log(userCoinBalanceAfterOperation, operationValue)
+    if (!operationValue || userCoinBalanceAfterOperation <= 0) {
       return res.status(400).send({
         success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
       });
     }
     UserModel.updateOne(
-      { _id: req._id }, 
-      { info: {
-        stableCoin: (stableCoin + operationValue),
-        }
+      { _id: req.user._id }, 
+      { stableCoin: parseInt(userCoinBalanceAfterOperation),
+        
       }
     )
       .then(() => {
-        res.status(200).send({ success: true, message: "Modification effectuée" });
+        res.status(200).send({ success: true, message: `OP VALUE ${operationValue} // ${req.user.info.stableCoin} ` });
       })
       .catch(() => {
         res
           .status(400)
-          .send({ success: false, message: "Erreur modification" });
+          .send({ success: false, message: "Erreur modification", debug:`${req.user._id}` });
       });
   },
 };

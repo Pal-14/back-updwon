@@ -13,7 +13,20 @@ let app = express();
 
 app.use(cors());
 app.use(logger('dev'));
+
+/* app.use(function(req, res, next) {
+    console.log(req.body);
+    req.cacahuette=true
+    next()
+ } ) */
+
 app.use(express.json());
+
+/* app.use(function(req, res, next) {
+    console.log(req.body);
+    console.log(req.cacahuette);
+    next()
+ } ) */
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 /* app.use(express.static(path.join(__dirname, 'public'))); */
