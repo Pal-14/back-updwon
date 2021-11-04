@@ -167,7 +167,7 @@ const UserControler = {
     }
     UserModel.updateOne(
       { _id: req._id }, //filtre
-      { info: {
+      { infos: {
         phoneNumber: phoneNumber, //a changer
         adress: adress,
         city: city,
