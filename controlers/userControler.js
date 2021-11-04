@@ -3,6 +3,7 @@ const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const SALTS = 10;
 
+
 function handleServerError(err, res) {
   console.log(err);
   return res.sendStatus(500);
@@ -223,6 +224,11 @@ const UserControler = {
           });
       });
   },
+
+  filesProof(req, res, next) {
+    console.log("files",req.files);
+    console.log("body",req.body);
+  }
 };
 
 module.exports = UserControler;
