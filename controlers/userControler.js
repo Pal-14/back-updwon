@@ -183,6 +183,33 @@ const UserControler = {
   // range comme tu veux Romain
 
   /* FeedUser */
+  editUser(req, res, next) {
+    let { telephone, adresse, ville, codePostal, dateOfBirth } = req.body;
+    if (!telephone || !adresse || !ville || !codePostal || !dateOfBirth) {
+      return res.status(400).send({
+        success: false,
+        message: "Les champs obligatoires ne sont pas tous remplis",
+      });
+    }
+    UserModel.updateOne(
+      { _id: req._id }, //filtre
+      { info: {
+        telephone: telephone, //a changer
+        adresse: adresse,
+        ville: ville,
+        codePostal: codePostal,
+        dateOfBirth: dateOfBirth,}
+      }
+    )
+      .then(() => {
+        res.status(200).send({ success: true, message: "Modification" });
+      })
+      .catch(() => {
+        res
+          .status(400)
+          .send({ success: false, message: "Erreur modification" });
+      });
+  },
   feedUser(req, res, next) {
     let { telephone, adresse, ville, codePostal, dateOfBirth } = req.body;
     if (!telephone || !adresse || !ville || !codePostal || !dateOfBirth) {
