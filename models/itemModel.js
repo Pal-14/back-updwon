@@ -16,7 +16,7 @@ const itemSchema = mongoose.Schema({
         
     },
     funding:{
-        initialStableData:
+        initialStableData:{
         priceInEuros:Number,
         initialTokenAmount:Number,
         initialTokenValueInEuros:Number,
@@ -26,9 +26,7 @@ const itemSchema = mongoose.Schema({
         fundingStartDate:String, 
         fundingEndDeadlineDate:String,
         fundingGoalReachedDate:String, 
-
-        
-
+        }
     }
 
 })

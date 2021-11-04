@@ -9,7 +9,7 @@ function readToken(req) {
     let token = splitted[1];
     if (token) return token;
     else return null;
-    }
+}
 
 
 

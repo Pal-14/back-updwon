@@ -193,9 +193,21 @@ const UserControler = {
   },
 
   editUserCoin(req, res, next) {
-    let { operationValue } = req.body;
-    let userCoinBalanceAfterOperation = req.user.stableCoin + operationValue;
-    console.log(userCoinBalanceAfterOperation, operationValue);
+    let {operationValue} = req.body;
+    let operationValueInNumber = parseInt(operationValue)
+    let userCoinBalanceBeforeOperationInNumber = parseInt(req.user.stableCoin);
+    let userCoinBalanceAfterOperation = userCoinBalanceBeforeOperationInNumber + operationValueInNumber;
+
+  
+    console.log("first",userCoinBalanceAfterOperation, typeof(userCoinBalanceAfterOperation),
+                "second", operationValue,
+                "userCoinInNumber",userCoinBalanceAfterOperation,
+                "third", req.user.stableCoin,
+                "req.user._id", req.user._id,
+                "opcalueinNumber",operationValueInNumber,typeof(operationValueInNumber),
+                "type", typeof(operationValue));
+
+                
     if (!operationValue || userCoinBalanceAfterOperation <= 0) {
       return res.status(400).send({
         success: false,
@@ -204,14 +216,14 @@ const UserControler = {
     }
     UserModel.updateOne(
       { _id: req.user._id },
-      { stableCoin: parseInt(userCoinBalanceAfterOperation) }
+      { stableCoin: userCoinBalanceAfterOperation }
     )
       .then(() => {
         res
           .status(200)
           .send({
             success: true,
-            message: `OP VALUE ${operationValue} // ${req.user.info.stableCoin} `,
+            message: `ok new user Balance is ${userCoinBalanceAfterOperation} `,
           });
       })
       .catch(() => {
