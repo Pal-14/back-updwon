@@ -16,7 +16,7 @@ router.get('/virgitest', UserControler.isUser, UserControler.testPrivateControll
 router.get('/checkToken', UserControler.isUser, UserControler.getInfos)
 router.post('/login', UserControler.login);
 router.post('/signup', UserControler.signup);
-router.put('/feedUsers', UserControler.isUser, UserControler.feedUser)
+router.put('/editUser', UserControler.isUser, UserControler.feedUser)
 
 
 

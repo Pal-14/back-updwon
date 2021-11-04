@@ -179,10 +179,9 @@ const UserControler = {
       })
       .catch((err) => handleServerError(err, res));
   },
-  /* ************* Hugues ROUTES **************** */
-  // range comme tu veux Romain
 
-  /* FeedUser */
+
+ /* EDIT USER INFOS  */
   editUser(req, res, next) {
     let { telephone, adresse, ville, codePostal, dateOfBirth } = req.body;
     if (!telephone || !adresse || !ville || !codePostal || !dateOfBirth) {
@@ -210,9 +209,11 @@ const UserControler = {
           .send({ success: false, message: "Erreur modification" });
       });
   },
-  feedUser(req, res, next) {
-    let { telephone, adresse, ville, codePostal, dateOfBirth } = req.body;
-    if (!telephone || !adresse || !ville || !codePostal || !dateOfBirth) {
+
+
+  editUserBalance(req, res, next) {
+    let { operationValue } = req.body;
+    if (!operationValue) {
       return res.status(400).send({
         success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
@@ -221,15 +222,12 @@ const UserControler = {
     UserModel.updateOne(
       { _id: req._id }, //filtre
       { info: {
-        telephone: telephone, //a changer
-        adresse: adresse,
-        ville: ville,
-        codePostal: codePostal,
-        dateOfBirth: dateOfBirth,}
+        stableCoin: stableCoin + operationValue, //a changer
+        }
       }
     )
       .then(() => {
-        res.status(200).send({ success: true, message: "Modification" });
+        res.status(200).send({ success: true, message: "Modification effectuée" });
       })
       .catch(() => {
         res
