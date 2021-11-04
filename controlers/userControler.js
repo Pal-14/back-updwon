@@ -211,7 +211,7 @@ const UserControler = {
   },
 
 
-  editUserBalance(req, res, next) {
+  editUserCoin(req, res, next) {
     let { operationValue } = req.body;
     if (!operationValue) {
       return res.status(400).send({
