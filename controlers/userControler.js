@@ -180,8 +180,8 @@ const UserControler = {
       .catch((err) => handleServerError(err, res));
   },
 
-  /* FeedUser */
-  feedUser(req, res, next) {
+  /* EDIT USER INFOS  */
+  editUser(req, res, next) {
     let { phoneNumber, adress, city, postalCode, dateOfBirth } = req.body;
     if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth) {
       return res.status(400).send({
@@ -219,9 +219,9 @@ const UserControler = {
       });
     }
     UserModel.updateOne(
-      { _id: req._id }, //filtre
+      { _id: req._id }, 
       { info: {
-        stableCoin: stableCoin + operationValue, //a changer
+        stableCoin: (stableCoin + operationValue),
         }
       }
     )
