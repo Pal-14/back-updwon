@@ -65,7 +65,7 @@ const UserControler = {
   getInfos(req, res, next) {
     return res
       .status(200)
-      .send({ succes: true, message: "Info utilisateur", data: req.user });
+      .send({ success: true, message: "Info utilisateur", data: req.user });
   },
 
   testPrivateController(req, res, next) {
