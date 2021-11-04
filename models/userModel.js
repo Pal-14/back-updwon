@@ -10,15 +10,16 @@ const userSchema = mongoose.Schema({
 
   infos: {
     phoneNumber: String,
-    nationality:String,
+    //nationality:String,
     dateOfBirth:String,
-    streetNumber:String,
-    streetName:String,
+    adress:String,
+    //streetNumber:String,
+    //streetName:String,
     city:String, 
     postalCode:String,
     country:String,
     isAdmin:Boolean,
-    isVerified:Boolean,
+    isVerified:String,
   },
   ownedItems: [{ itemId: String, tokenQuantity: Number, purchaseDate: String }],
 });

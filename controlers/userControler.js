@@ -128,7 +128,7 @@ const UserControler = {
   /* SIGNUP PUBLIC ROUTE */
 
   signup(req, res, next) {
-    let { firstName, lastName, email, password, confirmPassword, stableCoins } =
+    let { firstName, lastName, email, password, confirmPassword } =
       req.body;
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       return res.status(400).send({
@@ -152,7 +152,7 @@ const UserControler = {
             lastName: lastName,
             email: email,
             password: hashedPassword,
-            stableCoins: stableCoins,
+            stableCoins: 0,
           })
             .then((newUser) => {
               jwt.sign(
@@ -184,8 +184,8 @@ const UserControler = {
 
   /* FeedUser */
   feedUser(req, res, next) {
-    let { telephone, adresse, ville, codePostal, dateOfBirth } = req.body;
-    if (!telephone || !adresse || !ville || !codePostal || !dateOfBirth) {
+    let { phoneNumber, adress, city, postalCode, dateOfBirth } = req.body;
+    if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth) {
       return res.status(400).send({
         success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
@@ -194,10 +194,10 @@ const UserControler = {
     UserModel.updateOne(
       { _id: req._id }, //filtre
       { info: {
-        telephone: telephone, //a changer
-        adresse: adresse,
-        ville: ville,
-        codePostal: codePostal,
+        phoneNumber: phoneNumber, //a changer
+        adress: adress,
+        city: city,
+        postalCode: postalCode,
         dateOfBirth: dateOfBirth,}
       }
     )
