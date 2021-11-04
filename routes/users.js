@@ -17,7 +17,7 @@ router.get('/checkToken', UserControler.isUser, UserControler.getInfos)
 router.post('/login', UserControler.login);
 router.post('/signup', UserControler.signup);
 router.put('/editUser', UserControler.isUser, UserControler.editUser);
-router.put('/editUserCoin', UserControler.isUser, UserControler.editUserCoin)
+router.put('/editUserCoin', UserControler.isUser, UserControler.editUserCoin);
 
 
 

@@ -9,17 +9,18 @@ const userSchema = mongoose.Schema({
   stableCoins: Number,
 
   infos: {
+    isAdmin:Boolean,
+    isVerified:String,
     phoneNumber: String,
-    //nationality:String,
     dateOfBirth:String,
+
     adress:String,
-    //streetNumber:String,
-    //streetName:String,
     city:String, 
     postalCode:String,
     country:String,
-    isAdmin:Boolean,
-    isVerified:String,
+    //nationality:String,
+    //streetNumber:String,
+    //streetName:String,
   },
   ownedItems: [{ itemId: String, tokenQuantity: Number, purchaseDate: String }],
 });
