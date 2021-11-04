@@ -88,7 +88,7 @@ const UserControler = {
     if (!email || !password) {
       return res
         .status(400)
-        .send({ succes: false, message: "Merci de remplir les champs" });
+        .send({ success: false, message: "Merci de remplir les champs" });
     }
     return UserModel.findOne({ email: email })
       .then((user) => {
@@ -132,13 +132,13 @@ const UserControler = {
       req.body;
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       return res.status(400).send({
-        succes: false,
+        success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
       });
     }
     if (password != confirmPassword) {
       return res.status(400).send({
-        succes: false,
+        success: false,
         message: "Les mots de passe saisis ne sont pas identiques",
       });
     }
@@ -187,7 +187,7 @@ const UserControler = {
     let { telephone, adresse, ville, codePostal, dateOfBirth } = req.body;
     if (!telephone || !adresse || !ville || !codePostal || !dateOfBirth) {
       return res.status(400).send({
-        succes: false,
+        success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
       });
     }
