@@ -36,7 +36,6 @@ const UserControler = {
   },
 
   /* MIDDLEWARE TO CHECK IF USER CAN ACCESS PRIVATE ROUTES */
-  
 
   getInfos(req, res, next) {
     return res
@@ -104,8 +103,7 @@ const UserControler = {
   /* SIGNUP PUBLIC ROUTE */
 
   signup(req, res, next) {
-    let { firstName, lastName, email, password, confirmPassword } =
-      req.body;
+    let { firstName, lastName, email, password, confirmPassword } = req.body;
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       return res.status(400).send({
         success: false,
@@ -167,16 +165,24 @@ const UserControler = {
     }
     UserModel.updateOne(
       { _id: req._id }, //filtre
-      { infos: {
-        phoneNumber: phoneNumber, //a changer
-        adress: adress,
-        city: city,
-        postalCode: postalCode,
-        dateOfBirth: dateOfBirth,}
+      {
+        infos: {
+          phoneNumber: phoneNumber, //a changer
+          adress: adress,
+          city: city,
+          postalCode: postalCode,
+          dateOfBirth: dateOfBirth,
+        },
       }
     )
       .then(() => {
-        res.status(200).send({ success: true, message: "Modification" });
+        res
+          .status(200)
+          .send({
+            success: true,
+            message:
+              "vos informations sont en attente de validation par un administrateur",
+          });
       })
       .catch(() => {
         res
@@ -185,11 +191,10 @@ const UserControler = {
       });
   },
 
-
   editUserCoin(req, res, next) {
-    let { operationValue } = (req.body);
-    let userCoinBalanceAfterOperation = req.user.stableCoin + operationValue
-    console.log(userCoinBalanceAfterOperation, operationValue)
+    let { operationValue } = req.body;
+    let userCoinBalanceAfterOperation = req.user.stableCoin + operationValue;
+    console.log(userCoinBalanceAfterOperation, operationValue);
     if (!operationValue || userCoinBalanceAfterOperation <= 0) {
       return res.status(400).send({
         success: false,
@@ -197,18 +202,25 @@ const UserControler = {
       });
     }
     UserModel.updateOne(
-      { _id: req.user._id }, 
-      { stableCoin: parseInt(userCoinBalanceAfterOperation),
-        
-      }
+      { _id: req.user._id },
+      { stableCoin: parseInt(userCoinBalanceAfterOperation) }
     )
       .then(() => {
-        res.status(200).send({ success: true, message: `OP VALUE ${operationValue} // ${req.user.info.stableCoin} ` });
+        res
+          .status(200)
+          .send({
+            success: true,
+            message: `OP VALUE ${operationValue} // ${req.user.info.stableCoin} `,
+          });
       })
       .catch(() => {
         res
           .status(400)
-          .send({ success: false, message: "Erreur modification", debug:`${req.user._id}` });
+          .send({
+            success: false,
+            message: "Erreur modification",
+            debug: `${req.user._id}`,
+          });
       });
   },
 };
