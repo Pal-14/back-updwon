@@ -15,7 +15,6 @@ function readToken(req) {
 
 
 const Auth = {
-
     isUser(req, res, next) {
         let token = readToken(req, res);
         console.log(token, "test", JWT_SECRET);
@@ -46,20 +45,14 @@ const Auth = {
         if (req.user.infos.isAdmin === true) {
           next();
           /* return res.status(200).send({ success: true, message: "Ok" }); */
-        
         }
-        
         return res
           .status(403)
           .send({ succes: false,
              message: "N'est pas un admin",
              log:`${req.user.infos.isAdmin}`
-             
              });
-             
-             
       },
-        
 }
 
 module.exports = Auth
