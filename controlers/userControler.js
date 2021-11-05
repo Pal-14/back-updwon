@@ -211,7 +211,7 @@ const UserControler = {
     "type", typeof(operationValue));
     
     
-    if (!operationValue || userCoinBalanceAfterOperation <= 0) {
+    if (!operationValue || userCoinBalanceAfterOperation < 0) {
       return res.status(400).send({
         success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
