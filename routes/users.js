@@ -24,6 +24,8 @@ router.put('/editUser', Auth.isUser, UserControler.editUser);
 router.put('/editUserCoin', Auth.isUser, UserControler.editUserCoin);
 router.post('/filesProof', Auth.isUser, upload.array("files", 3), UserControler.filesProof);
 
+/* ROUTE TRIES */
+router.put('/editUserYourChoice', Auth.isUser, UserControler.editUserYourChoice )
 
 
 module.exports = router;

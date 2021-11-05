@@ -158,7 +158,7 @@ const UserControler = {
   /* EDIT USER INFOS  */
   editUser(req, res, next) {
     let { phoneNumber, adress, city, postalCode, dateOfBirth } = req.body;
-    if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth) {
+    if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth || !country) {
       return res.status(400).send({
         success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
@@ -169,10 +169,11 @@ const UserControler = {
       {
         infos: {
           phoneNumber: phoneNumber, //a changer
+          dateOfBirth: dateOfBirth,
           adress: adress,
           city: city,
           postalCode: postalCode,
-          dateOfBirth: dateOfBirth,
+          country: country,
         },
       }
     )
@@ -192,27 +193,30 @@ const UserControler = {
       });
   },
 
+
+
   editUserCoin(req, res, next) {
     let {operationValue} = req.body;
     let operationValueInNumber = parseInt(operationValue)
     let userCoinBalanceBeforeOperationInNumber = parseInt(req.user.stableCoin);
     let userCoinBalanceAfterOperation = userCoinBalanceBeforeOperationInNumber + operationValueInNumber;
 
-  
+    /* LOGS FOR DEBUG & EDUCATIONAL PURPOSES // WILL BE REMOVED */
     console.log("first",userCoinBalanceAfterOperation, typeof(userCoinBalanceAfterOperation),
-                "second", operationValue,
-                "userCoinInNumber",userCoinBalanceAfterOperation,
-                "third", req.user.stableCoin,
-                "req.user._id", req.user._id,
-                "opcalueinNumber",operationValueInNumber,typeof(operationValueInNumber),
-                "type", typeof(operationValue));
-
-                
+    "second", operationValue,
+    "userCoinInNumber",userCoinBalanceAfterOperation,
+    "third", req.user.stableCoin,
+    "req.user._id", req.user._id,
+    "opcalueinNumber",operationValueInNumber,typeof(operationValueInNumber),
+    "type", typeof(operationValue));
+    
+    
     if (!operationValue || userCoinBalanceAfterOperation <= 0) {
       return res.status(400).send({
         success: false,
         message: "Les champs obligatoires ne sont pas tous remplis",
       });
+      
     }
     UserModel.updateOne(
       { _id: req.user._id },
@@ -235,6 +239,12 @@ const UserControler = {
             debug: `${req.user._id}`,
           });
       });
+  },
+
+  editUserYourChoice(req, res, next){
+    let {pathOfKeyToEdit, incomingChangeValue} = req.body;
+    console.log(pathOfKeyToEdit, incomingChangeValue)
+
   },
 
   filesProof(req, res, next) {
