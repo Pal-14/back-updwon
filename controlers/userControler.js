@@ -27,15 +27,7 @@ const UserControler = {
     next();
   },
 
-  isAdmin(req, res, next) {
-    if (!req.user.admin) {
-      return res.status(200).send({ success: true, message: "Ok" });
-    }
-    return res
-      .status(403)
-      .send({ succes: false, message: "N'est pas un admin" });
-  },
-
+  
   /* MIDDLEWARE TO CHECK IF USER CAN ACCESS PRIVATE ROUTES */
 
   getInfos(req, res, next) {
