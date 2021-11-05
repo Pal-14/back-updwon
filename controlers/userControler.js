@@ -157,7 +157,7 @@ const UserControler = {
 
   /* EDIT USER INFOS  */
   editUser(req, res, next) {
-    let { phoneNumber, adress, city, postalCode, dateOfBirth } = req.body;
+    let { phoneNumber, adress, city, postalCode, dateOfBirth, country } = req.body;
     if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth || !country) {
       return res.status(400).send({
         success: false,
