@@ -124,7 +124,8 @@ const UserControler = {
             stableCoin: 0,
             infos:{
               isAdmin: !isAdmin ? "false" : isAdmin,
-              isVerified: "a finaliser",
+              hasProvidedAllDocuments: false,
+              isVerifiedByAdmin: false,
               phoneNumber:"",
               dateOfBirth:"",
 

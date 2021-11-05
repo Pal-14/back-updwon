@@ -9,6 +9,8 @@ const userSchema = mongoose.Schema({
   stableCoin: Number,
 
   infos: {
+    isVerifiedByAdmin: Boolean,
+    hasProvidedAllDocuments: Boolean,
     isAdmin:Boolean,
     isVerified:String,
     phoneNumber: String,
