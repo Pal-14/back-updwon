@@ -129,7 +129,16 @@ const UserControler = {
             password: hashedPassword,
             stableCoin: 0,
             infos:{
+              isAdmin:false,
+              isVerified:false,
+              phoneNumber:"",
+              dateOfBirth:"",
+
+              adress:"",
+              city:"",
+              postalCode:"",
               country:country,
+
             }
           })
             .then((newUser) => {
