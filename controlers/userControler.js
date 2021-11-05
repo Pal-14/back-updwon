@@ -162,18 +162,19 @@ const UserControler = {
 
   /* EDIT USER INFOS  */
   editUser(req, res, next) {
-    let { phoneNumber, adress, city, postalCode, dateOfBirth, country } = req.body;
-    if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth || !country) {
+    let { userName, phoneNumber, dateOfBirth, adress, city,  postalCode,  country } = req.body;
+    if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth ) {
       return res.status(400).send({
         success: false,
         message: "Les champs obligatoires ne sont pas tous remplis."
       });
     }
     UserModel.updateOne(
-      { _id: req._id }, //filtre
-      {
+      { _id: req._id }, 
+      { userName:userName,
+
         infos: {
-          phoneNumber: phoneNumber, //a changer
+          phoneNumber: phoneNumber,
           dateOfBirth: dateOfBirth,
           adress: adress,
           city: city,
