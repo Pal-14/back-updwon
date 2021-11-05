@@ -6,6 +6,7 @@ const Auth = require('../middlewares/authentification.js')
 
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
+const type = upload.any("file")
 
 /* GET USERS LISTING // DEV ROUTE SO FRONT END TEAM CAN RECEIVE DATA AND TRY STUFF // WILL BE REMOVED */
 router.get('/', function(req, res, next) {
@@ -30,7 +31,7 @@ router.put('/edit-user', Auth.isUser, UserControler.editUser);
 router.put('/edit-user-coin', Auth.isUser, UserControler.editUserCoin);
 router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserControler.editUserAdminStatus);
 
-router.post('/files-proof', Auth.isUser, upload.array("files", 3), UserControler.filesProof);
+router.post('/files-proof', Auth.isUser, type, UserControler.filesProof);
 
 
 
