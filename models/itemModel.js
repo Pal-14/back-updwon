@@ -16,16 +16,16 @@ const itemSchema = mongoose.Schema({
         
     },
     funding:{
-        initialStableData:{
-        priceInEuros:Number,
-        initialTokenAmount:Number,
-        initialTokenValueInEuros:Number,
-        
-        remainingAvailableToken:Number,
+        initialData:{
+            priceInEuros:Number,
+            initialTokenAmount:Number,
+            initialTokenValueInEuros:Number,
+            
+            remainingAvailableToken:Number,
 
-        fundingStartDate:String, 
-        fundingEndDeadlineDate:String,
-        fundingGoalReachedDate:String, 
+            fundingStartDate:String, 
+            fundingEndDeadlineDate:String,
+            fundingGoalReachedDate:String, 
         }
     }
 
