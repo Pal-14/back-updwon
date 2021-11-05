@@ -15,17 +15,26 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/virgitest', Auth.isUser, UserControler.testPrivateController)
 
-router.get('/checkToken', Auth.isUser, UserControler.getInfos)
+
+/* PUBLIC ROUTES  */
 router.post('/login', UserControler.login);
 router.post('/signup', UserControler.signup);
-router.put('/editUser', Auth.isUser, UserControler.editUser);
-router.put('/editUserCoin', Auth.isUser, UserControler.editUserCoin);
-router.post('/filesProof', Auth.isUser, upload.array("files", 3), UserControler.filesProof);
+
+/* PRIVATE ROUTES  */
+router.get('/virgitest', Auth.isUser, UserControler.testPrivateController)
+router.get('/check-token', Auth.isUser, UserControler.getInfos)
+router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivateController)
+
+router.put('/edit-user', Auth.isUser, UserControler.editUser);
+router.put('/edit-user-coin', Auth.isUser, UserControler.editUserCoin);
+
+router.post('/files-proof', Auth.isUser, upload.array("files", 3), UserControler.filesProof);
+
+
 
 /* ROUTE TRIES */
-router.put('/editUserYourChoice', Auth.isUser, UserControler.editUserYourChoice )
+router.put('/edit-user-your-choice', Auth.isUser, UserControler.editUserYourChoice )
 
 
 module.exports = router;
