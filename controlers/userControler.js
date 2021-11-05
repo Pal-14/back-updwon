@@ -104,7 +104,7 @@ const UserControler = {
   /* SIGNUP PUBLIC ROUTE */
 
   signup(req, res, next) {
-    let { firstName, lastName, email, password, confirmPassword } = req.body;
+    let { firstName, lastName, email, password, confirmPassword, country} = req.body;
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       return res.status(400).send({
         success: false,
@@ -128,6 +128,9 @@ const UserControler = {
             email: email,
             password: hashedPassword,
             stableCoin: 0,
+            infos:{
+              country:country,
+            }
           })
             .then((newUser) => {
               jwt.sign(
