@@ -284,6 +284,7 @@ const UserControler = {
   },
 
   filesProof(req, res, next) {
+    console.log("je suis ici");
     console.log("files",req.files);
     console.log("body",req.body);
    /*  infos:{
