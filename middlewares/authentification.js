@@ -43,16 +43,23 @@ const Auth = {
       },
 
       isAdmin(req, res, next) {
-        if (!req.user.infos.isAdmin) {
-          return res.status(200).send({ success: true, message: "Ok" });
+        if (req.user.infos.isAdmin === true) {
+          next();
+          /* return res.status(200).send({ success: true, message: "Ok" }); */
+        
         }
+        
         return res
           .status(403)
-          .send({ succes: false, message: "N'est pas un admin" });
+          .send({ succes: false,
+             message: "N'est pas un admin",
+             log:`${req.user.infos.isAdmin}`
+             
+             });
+             
+             
       },
-    
-
-
+        
 }
 
 module.exports = Auth

@@ -96,7 +96,8 @@ const UserControler = {
   /* SIGNUP PUBLIC ROUTE */
 
   signup(req, res, next) {
-    let { firstName, lastName, email, password, confirmPassword, country, userName} = req.body;
+    let { firstName, lastName, email, password, confirmPassword, country, userName, isAdmin} = req.body;
+    
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       return res.status(400).send({
         success: false,
@@ -122,7 +123,7 @@ const UserControler = {
             password: hashedPassword,
             stableCoin: 0,
             infos:{
-              isAdmin:false,
+              isAdmin: !isAdmin ? "false" : isAdmin,
               isVerified: "a finaliser",
               phoneNumber:"",
               dateOfBirth:"",
@@ -248,7 +249,7 @@ const UserControler = {
   },
 
   editUserAdminStatus(req, res, next){
-    let {newUserAdminStatus} = req.body;
+    let {newUserAdminStatus, targetUserId} = req.body;
     if (!newUserAdminStatus){
       return res.status(400).send({
         success:false,
@@ -257,7 +258,7 @@ const UserControler = {
       })
     }
     return UserModel.updateOne(
-      {_id:req.user._id},
+      {_id: targetUserId},
       {infos:{
         isAdmin:newUserAdminStatus
       }}
@@ -267,7 +268,7 @@ const UserControler = {
           .status(200)
           .send({
             success: true,
-            message:`User Admin successfully changed. Admin status is now ${newUserAdminStatus}`
+            message:`User Admin successfully changed. User with _id : ${targetUserId}Admin status is now ${newUserAdminStatus}`
           })
       })
       .catch((err) =>{
@@ -319,7 +320,6 @@ const UserControler = {
 
 
     console.log(pathOfKeyToEdit, incomingChangeValue)
-
   },
 
   filesProof(req, res, next) {
