@@ -104,7 +104,7 @@ const UserControler = {
   /* SIGNUP PUBLIC ROUTE */
 
   signup(req, res, next) {
-    let { firstName, lastName, email, password, confirmPassword, country} = req.body;
+    let { firstName, lastName, email, password, confirmPassword, country, userName} = req.body;
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       return res.status(400).send({
         success: false,
@@ -125,6 +125,7 @@ const UserControler = {
           return UserModel.create({
             firstName: firstName,
             lastName: lastName,
+            userName: userName,
             email: email,
             password: hashedPassword,
             stableCoin: 0,
