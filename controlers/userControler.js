@@ -161,7 +161,7 @@ const UserControler = {
     if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth || !country) {
       return res.status(400).send({
         success: false,
-        message: "Les champs obligatoires ne sont pas tous remplis",
+        message: "Les champs obligatoires ne sont pas tous remplis."
       });
     }
     UserModel.updateOne(
@@ -214,7 +214,7 @@ const UserControler = {
     if (!operationValue || userCoinBalanceAfterOperation < 0) {
       return res.status(400).send({
         success: false,
-        message: "Les champs obligatoires ne sont pas tous remplis",
+        message: `Les champs obligatoires ne sont pas tous remplis.  Ou l'opération n'est pas authorisée. Le solde de l'utilisateur reste de ${req.user.stableCoin}`,
       });
       
     }
