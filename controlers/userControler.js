@@ -255,6 +255,36 @@ const UserControler = {
 
   editUserYourChoice(req, res, next){
     let {pathOfKeyToEdit, incomingChangeValue} = req.body;
+
+    /* function exist(collection, target, id) {
+      const Model = require(`../models/${collection}`);
+      let queryParam = {};
+      queryParam[target] = id;
+      return Model.find(queryParam).then((data) => {
+        if (data.length > 0) {
+          return true;
+        }
+        return false;
+      });
+    } */
+
+    /* Utilisateur.updateOne(
+      { _id: req.body._id }, //filtre
+      {
+        pseudo: req.body.pseudo, //a changer
+        age: req.body.age,
+        genre: req.body.genre,
+        bio: req.body.bio,
+      }
+    )
+      .then(function () {
+        res.send({ success: true, message: "Modification" });
+      })
+      .catch(function () {
+        res.status(400).send({ success: false, message: "Erreur modification" });
+      }); */
+
+
     console.log(pathOfKeyToEdit, incomingChangeValue)
 
   },
