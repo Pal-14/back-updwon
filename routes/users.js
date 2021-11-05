@@ -24,7 +24,7 @@ router.post('/signup', UserControler.signup);
 /* PRIVATE ROUTES  */
 router.get('/virgitest', Auth.isUser, UserControler.testPrivateController)
 router.get('/check-token', Auth.isUser, UserControler.getInfos)
-router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivateController )
+router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivateController)
 
 router.put('/edit-user', Auth.isUser, UserControler.editUser);
 router.put('/edit-user-coin', Auth.isUser, UserControler.editUserCoin);
