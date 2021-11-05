@@ -224,7 +224,7 @@ const UserControler = {
       });
       
     }
-    UserModel.updateOne(
+    return UserModel.updateOne(
       { _id: req.user._id },
       { stableCoin: userCoinBalanceAfterOperation }
     )
@@ -246,6 +246,45 @@ const UserControler = {
           });
       });
   },
+
+  editUserAdminStatus(req, res, next){
+    let {newUserAdminStatus} = req.body;
+    if (!newUserAdminStatus){
+      return res.status(400).send({
+        success:false,
+        message: "Nope nope nope nope. No user Info",
+        logOfInputValue: `Log it bb ${newUserAdminStatus}`
+      })
+    }
+    return UserModel.updateOne(
+      {_id:req.user._id},
+      {infos:{
+        isAdmin:newUserAdminStatus
+      }}
+    )
+      .then(()=>{
+        res
+          .status(200)
+          .send({
+            success: true,
+            message:`User Admin successfully changed. Admin status is now ${newUserAdminStatus}`
+          })
+      })
+      .catch((err) =>{
+        res
+          .status(400)
+          .send({
+            success:false,
+            message:`Did not go well. User admin status unchanged. ${req.user.infos.isAdmin} Err Log : ${err}`
+
+          })
+      })
+
+
+
+  },
+
+  
 
   editUserYourChoice(req, res, next){
     let {pathOfKeyToEdit, incomingChangeValue} = req.body;
