@@ -123,7 +123,7 @@ const UserControler = {
             stableCoin: 0,
             infos:{
               isAdmin:false,
-              isVerified:false,
+              isVerified: "a finaliser",
               phoneNumber:"",
               dateOfBirth:"",
 
@@ -325,6 +325,8 @@ const UserControler = {
   filesProof(req, res, next) {
     console.log("files",req.files);
     console.log("body",req.body);
+   /*  infos:{
+      isVerified: "a verifier", */
   }
 };
 
