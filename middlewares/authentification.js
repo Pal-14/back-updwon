@@ -15,51 +15,39 @@ function readToken(req) {
 
 
 const Auth = {
-
-    isUser(req, res, next) {
-        let token = readToken(req, res);
-        console.log(token, "test", JWT_SECRET);
-        if (token === null)
-          return res
-            .status(401)
-            .send({ succes: false, message: "Pas de connexion" });
-        jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
-          console.log(err, decodedToken);
-          if (err)
-            return res
-              .status(400)
-              .send({ succes: false, message: "Erreur sur le Token" });
-          let _id = decodedToken._id;
-          UserModel.findOne({ _id: _id }).then((dbResponse) => {
-            if (dbResponse === null)
-              return res
-                .status(404)
-                .send({ succes: false, message: "Pas d'utilisateur associé" });
-            req.user = dbResponse;
-            req._id = decodedToken._id;
-            next();
-          });
-        });
-      },
-
-      isAdmin(req, res, next) {
-        if (req.user.infos.isAdmin === true) {
-          next();
-          /* return res.status(200).send({ success: true, message: "Ok" }); */
-        
-        }
-        
+  isUser(req, res, next) {
+      let token = readToken(req, res);
+      console.log(token, "test", JWT_SECRET);
+      if (token === null)
         return res
-          .status(403)
-          .send({ succes: false,
-             message: "N'est pas un admin",
-             log:`${req.user.infos.isAdmin}`
-             
-             });
-             
-             
-      },
-        
+          .status(401)
+          .send({ succes: false, message: "Pas de connexion" });
+      jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+        console.log(err, decodedToken);
+        if (err)
+          return res
+            .status(400)
+            .send({ succes: false, message: "Erreur sur le Token" });
+        let _id = decodedToken._id;
+        UserModel.findOne({ _id: _id }).then((dbResponse) => {
+          if (dbResponse === null)
+            return res
+              .status(404)
+              .send({ succes: false, message: "Pas d'utilisateur associé" });
+          req.user = dbResponse;
+          req._id = decodedToken._id;
+          next();
+        });
+      });
+    },
+
+  isAdmin(req, res, next) {
+    if (req.user.infos.isAdmin != true) 
+      return res
+        .status(403)
+        .send({ succes: false, message: "Vous ne disposez pas de droits suffisants. N'est pas un admin", log:`${req.user.infos.isAdmin}`});
+    next();
+  },
 }
 
 module.exports = Auth

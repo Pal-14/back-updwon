@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const DB_URI = process.env.SCALINGO_MONGO_URL || 'mongodb://localhost:27017/dbLocaleDeRom'
+const DB_URI = process.env.SCALINGO_MONGO_URL || 'mongodb://localhost:27017/scrumbag-db'
 mongoose.connect(DB_URI).then(()=>{
     console.log("******** CONNECTED TO DATABASE ********");   
     console.log("********     UP DOWN STREET    ********");

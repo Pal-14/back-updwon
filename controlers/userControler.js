@@ -37,11 +37,10 @@ const UserControler = {
   },
 
   testPrivateController(req, res, next) {
-    console.log(`USER FIRST NAME IS : ${req.user.firstname}`);
-    res.send({
-      success: true,
-      message: "Test Virginie Controler was successfull ! lets go !",
-    });
+    
+    console.log(`USER FIRST NAME IS : ${req.user.firstName}`);
+    next();
+    
   },
 
   /* ************* PUBLIC ROUTES **************** */
@@ -118,7 +117,7 @@ const UserControler = {
           return UserModel.create({
             firstName: firstName,
             lastName: lastName,
-            userName: userName,
+            userName: !userName ? "":userName,
             email: email,
             password: hashedPassword,
             stableCoin: 0,
@@ -132,8 +131,7 @@ const UserControler = {
               adress:"",
               city:"",
               postalCode:"",
-              country:country,
-
+              country:!country?"":country,
             }
           })
             .then((newUser) => {
@@ -191,7 +189,7 @@ const UserControler = {
           .send({
             success: true,
             message:
-              "vos informations sont en attente de validation par un administrateur",
+              "Vos modifications ont bien été effectuées.",
           });
       })
       .catch(() => {
@@ -269,7 +267,7 @@ const UserControler = {
           .status(200)
           .send({
             success: true,
-            message:`User Admin successfully changed. User with _id : ${targetUserId}Admin status is now ${newUserAdminStatus}`
+            message:`User Admin successfully changed. User with _id : ${targetUserId}. Admin status is now ${newUserAdminStatus}`
           })
       })
       .catch((err) =>{
