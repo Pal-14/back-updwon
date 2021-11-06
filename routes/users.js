@@ -44,7 +44,7 @@ router.post('/files-proof', Auth.isUser, type, UserControler.filesProof);
 
 
 /* ROUTE TRIES */
-router.put('/edit-user-your-choice', Auth.isUser, UserControler.editUserYourChoice )
+/* router.put('/edit-user-your-choice', Auth.isUser, UserControler.editUserYourChoice ) */
 
 
 module.exports = router;
