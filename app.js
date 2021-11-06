@@ -2,6 +2,7 @@ let express = require('express');
 const cors = require('cors')
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
+let path = require('path')
 
 require('dotenv').config();
 require('./connectDb')
@@ -29,7 +30,7 @@ app.use(express.json());
  } ) */
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-/* app.use(express.static(path.join(__dirname, 'public'))); */
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

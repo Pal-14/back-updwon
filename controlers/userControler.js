@@ -191,7 +191,7 @@ const UserControler = {
           .send({
             success: true,
             message:
-              "vos informations sont en attente de validation par un administrateur",
+              "Vos modifications ont bien été effectuées.",
           });
       })
       .catch(() => {
@@ -259,7 +259,6 @@ const UserControler = {
       })
     }
     return UserModel.updateOne(
-      let mavaleur = "isVerified";
       {_id: targetUserId},
       {infos:{
         isAdmin:newUserAdminStatus
@@ -270,7 +269,7 @@ const UserControler = {
           .status(200)
           .send({
             success: true,
-            message:`User Admin successfully changed. User with _id : ${targetUserId}Admin status is now ${newUserAdminStatus}`
+            message:`User Admin successfully changed. User with _id : ${targetUserId}. Admin status is now ${newUserAdminStatus}`
           })
       })
       .catch((err) =>{
