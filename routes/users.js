@@ -4,7 +4,8 @@ var router = express.Router();
 const UserModel = require('../models/userModel.js')
 const Auth = require('../middlewares/authentification.js')
 
-const multer  = require('multer')
+const multer  = require('multer');
+const { response } = require('../app.js');
 const upload = multer({ dest: 'uploads/' })
 const type = upload.any("file")
 
@@ -25,7 +26,14 @@ router.post('/signup', UserControler.signup);
 /* PRIVATE ROUTES  */
 router.get('/virgitest', Auth.isUser, UserControler.testPrivateController)
 router.get('/check-token', Auth.isUser, UserControler.getInfos)
-router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivateController)
+router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivateController, function(req, res, next){
+  UserModel
+    .find({}).then((response)=>{
+      res.send(response)
+    })
+})
+
+
 
 router.put('/edit-user', Auth.isUser, UserControler.editUser);
 router.put('/edit-user-coin', Auth.isUser, UserControler.editUserCoin);
