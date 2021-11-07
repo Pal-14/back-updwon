@@ -2,7 +2,18 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const SALTS = 10;
+const path = require('path')
 
+const multer = require ('multer');
+const storage = multer.diskStorage({
+  destination:'../public/uploads',
+  filename: function (req, file, cb){
+    cb(null, file.filename + '-' + Date.now() + path.extname(file.originalname))
+  }
+})
+const upload = multer({
+  storage:storage,
+}).single('file_upload');
 
 function handleServerError(err, res) {
   console.log(err);
@@ -45,6 +56,23 @@ const UserControler = {
 
   /* ************* PUBLIC ROUTES **************** */
 
+/*   ROUTE TRY UPLOADS 
+ */
+
+uploadDocument(res, req, next)  {
+  upload(req, res, (err) => {
+    if (err){
+        res.sendStatus(400)
+    } else {
+        console.log(req.file);
+        res.send(`Vos fichiers sont sont en traitement dans notre base de donnés.
+        Vous pouvez continuer de visiter notre site en attendant
+         qu'un administrateur valide votre compte`);
+    }
+  })  
+},
+
+  
   /* LOGIN */
 
   login(req, res, next) {
@@ -204,6 +232,37 @@ const UserControler = {
           .send({ success: false, message: "Erreur modification" });
       });
   },
+
+  editUserTry(req, res, next) {
+    let { editValue } = req.body;
+    if (!editValue ) {
+      return res.status(400).send({
+        success: false,
+        message: "Les champs obligatoires ne sont pas tous remplis."
+      });
+    }
+    UserModel.updateOne(
+      { _id: req._id }, 
+      { $set: {
+        "infos.adress":"WOOOOO",}}
+    )
+      .then(() => {
+        res
+          .status(200)
+          .send({
+            success: true,
+            message:
+              "Vos modifications ont bien été effectuées.",
+          });
+      })
+      .catch((err) => {
+        res
+          .status(400)
+          .send({ success: false, message: "Erreur modification" });
+      });
+  },
+
+
 
 
 
