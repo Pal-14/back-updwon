@@ -6,7 +6,7 @@ let path = require('path')
 
 const multer = require('multer')////////////
 const ejs = require('ejs')/////////////
-const path = require ('path')//////////////
+
 
 
 
@@ -35,7 +35,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-}).array('myImage');
+}).single('file_upload');
 
 
 

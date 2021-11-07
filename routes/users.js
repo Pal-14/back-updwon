@@ -6,8 +6,8 @@ const Auth = require('../middlewares/authentification.js')
 
 const multer  = require('multer');
 const { response } = require('../app.js');
-const upload = multer({ dest: 'uploads/' })
-const type = upload.any("file")
+
+
 
 /* GET USERS LISTING // DEV ROUTE SO FRONT END TEAM CAN RECEIVE DATA AND TRY STUFF // WILL BE REMOVED */
 router.get('/', function(req, res, next) {
@@ -17,6 +17,24 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/////////////////////////////////set storage
+const storage = multer.diskStorage({
+  destination: './public/uploads',
+  filename :function  (req, file, cb){
+      cb(null, file.fieldname + '-' + Date.now() /*  + path.extname(file.originalname ) */);
+  }
+});
+
+
+/////init upload
+
+const upload = multer({
+  storage: storage,
+}).single('file_upload');
+
+
+///public folder
+router.use(express.static('/public'))//////////////
 
 
 /* PUBLIC ROUTES  */
@@ -39,8 +57,22 @@ router.put('/edit-user', Auth.isUser, UserControler.editUser);
 router.put('/edit-user-coin', Auth.isUser, UserControler.editUserCoin);
 router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserControler.editUserAdminStatus);
 
-router.post('/files-proof', Auth.isUser, type, UserControler.filesProof);
+/* router.post('/files-proof', Auth.isUser, UserControler.filesProof); */
 
+router.post('/files-proof', (req, res)=>{
+  upload(req, res, (err)=> {
+      if (err){
+          res.render('index', {
+              msg : err
+          });
+      } else {
+          console.log(req.file);
+          res.send(`Vos fichiers sont sont en traitement dans notre base de donnés.
+          Vous pouvez continuer de visiter notre site en attendant
+           qu'un administrateur valide votre compte`);
+      }
+  }) 
+})
 
 
 /* ROUTE TRIES */
