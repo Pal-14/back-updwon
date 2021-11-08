@@ -3,7 +3,7 @@ const UserControler = require('../controlers/userControler.js');
 var router = express.Router();
 const UserModel = require('../models/userModel.js')
 const Auth = require('../middlewares/authentification.js')
-
+let path = require('path')
 const multer  = require('multer');
 const { response } = require('../app.js');
 
@@ -21,10 +21,11 @@ router.get('/', function(req, res, next) {
 const storage = multer.diskStorage({
   destination: './public/uploads',
   filename :function  (req, file, cb){
-      cb(null, file.fieldname + '-' + Date.now() /*  + path.extname(file.originalname ) */);
+    console.log(path.extname)
+    cb(null, file.fieldname + '-' + Date.now()   + path.extname(file.originalname ) );
   }
 });
-
+  
 
 /////init upload
 
