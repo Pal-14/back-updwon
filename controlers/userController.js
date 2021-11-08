@@ -8,7 +8,7 @@ const multer = require ('multer');
 const storage = multer.diskStorage({
   destination:'../public/uploads',
   filename: function (req, file, cb){
-    cb(null, file.filename + '-' + Date.now() + path.extname(file.originalname))
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 })
 const upload = multer({
@@ -31,7 +31,7 @@ function readToken(req) {
   else return null;
 }
 
-const UserControler = {
+const UserController = {
   /* BONUS MIDDLEWARES IF NEED TO LOG BODY OR WANT TO TRY ADMIN SYSTEM */
   logBody(req, res, next) {
     console.log(req.body);
@@ -65,9 +65,7 @@ uploadDocument(res, req, next)  {
         res.sendStatus(400)
     } else {
         console.log(req.file);
-        res.send(`Vos fichiers sont sont en traitement dans notre base de donnés.
-        Vous pouvez continuer de visiter notre site en attendant
-         qu'un administrateur valide votre compte`);
+        res.send(`Vos fichiers compte`);
     }
   })  
 },
@@ -234,7 +232,8 @@ uploadDocument(res, req, next)  {
   },
 
   editUserTry(req, res, next) {
-    let { editValue } = req.body;
+    let { editValue, keyToEdit } = req.body;
+
     if (!editValue ) {
       return res.status(400).send({
         success: false,
@@ -244,7 +243,7 @@ uploadDocument(res, req, next)  {
     UserModel.updateOne(
       { _id: req._id }, 
       { $set: {
-        "infos.adress":"WOOOOO",}}
+        [keyToEdit]:"WOOOOO",}}
     )
       .then(() => {
         res
@@ -362,7 +361,7 @@ uploadDocument(res, req, next)  {
   }
 };
 
-module.exports = UserControler;
+module.exports = UserController;
 
 
 

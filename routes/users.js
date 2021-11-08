@@ -1,5 +1,5 @@
 var express = require('express');
-const UserControler = require('../controlers/userControler.js');
+const UserController = require('../controlers/UserController.js');
 var router = express.Router();
 const UserModel = require('../models/userModel.js')
 const Auth = require('../middlewares/authentification.js')
@@ -31,13 +31,13 @@ router.get('/', function(req, res, next) {
 
 
 /* PUBLIC ROUTES  */
-router.post('/login', UserControler.login);
-router.post('/signup', UserControler.signup);
+router.post('/login', UserController.login);
+router.post('/signup', UserController.signup);
 
 /* PRIVATE ROUTES  */
-router.get('/virgitest', Auth.isUser, UserControler.testPrivateController)
-router.get('/check-token', Auth.isUser, UserControler.getInfos)
-router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivateController, function(req, res, next){
+router.get('/virgitest', Auth.isUser, UserController.testPrivateController)
+router.get('/check-token', Auth.isUser, UserController.getInfos)
+router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserController.testPrivateController, function(req, res, next){
   UserModel
     .find({}).then((response)=>{
       res.send(response)
@@ -46,17 +46,18 @@ router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivat
 
 
 
-router.put('/edit-user', Auth.isUser, UserControler.editUser);
-router.put('/edit-user-coin', Auth.isUser, UserControler.editUserCoin);
-router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserControler.editUserAdminStatus);
+router.put('/edit-user', Auth.isUser, UserController.editUser);
+router.put('/edit-user-coin', Auth.isUser, UserController.editUserCoin);
+router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserController.editUserAdminStatus);
 
-/* router.post('/files-proof', Auth.isUser, type, UserControler.filesProof);
+/* router.post('/files-proof', Auth.isUser, type, UserController.filesProof);
  */
 
 
 /* ROUTE TRIES */
-/* router.put('/edit-user-your-choice', Auth.isUser, UserControler.editUserYourChoice ) */
-router.post('/edit-user-try', Auth.isUser, UserControler.editUserTry);
+/* router.put('/edit-user-your-choice', Auth.isUser, UserController.editUserYourChoice ) */
+router.post('/edit-user-try', Auth.isUser, UserController.editUserTry);
+router.post('/upload-doc-rom', /* Auth.isUser, */ UserController.uploadDocument)
 
 
 
