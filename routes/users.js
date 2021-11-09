@@ -70,21 +70,18 @@ router.put('/edit-user-status', Auth.isUser, Auth.isAdmin, UserController.editUs
 /* ROUTE TRIES */
 /* router.put('/edit-user-your-choice', Auth.isUser, UserController.editUserYourChoice ) */
 router.post('/edit-user-try', Auth.isUser, UserController.editUserTry);
-router.post('/upload', Auth.isUser, (req, res, next)=>{
-  
-  upload(req, res, next, (err)=> {
-    if (err){
-      console.log('youpo') 
-      console.log(file.originalname)
-      res.render('index', {
+router.post('/upload', Auth.isUser, (req, res)=>{
+  console.log("whut",req.user)
+    upload(req, res, (err)=> {
+        if (err){
+            res.render('index', {
                 msg : err
             });
+        } else {
+            res.send({success:true,
+                 message:`Envoi du fichier : OK`,
+                log:`file log ${res}`});
         }
-        console.log(file.originalname)
-        next()
-      });
-    }, 
-UserController.testPrivateController)
-
-
+    }) 
+})
 module.exports = router;
