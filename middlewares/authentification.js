@@ -12,7 +12,7 @@ function readToken(req) {
 }
 
 function handleServerError(err, res) {
-  console.log(err);
+  console.log("ERREUR",err);
   return res.sendStatus(500);
 }
 
