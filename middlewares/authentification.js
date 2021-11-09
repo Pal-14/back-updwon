@@ -21,7 +21,6 @@ function handleServerError(err, res) {
 const Auth = {
   isUser(req, res, next) {
       let token = readToken(req, res);
-      console.log(token, "test", JWT_SECRET);
       if (token === null)
         return res
           .status(401)
