@@ -12,7 +12,7 @@ const storage = multer.diskStorage( {
   
   destination:'./public/uploads',
   filename: function (req, file, cb){
-    myFileName = req.user._id + 'yoshh' + Date.now() + file.originalname,
+    myFileName =file.fieldname +'-'+  req.user._id + 'yoshh' + Date.now() + '-' + file.originalname 
     req.nameOfUploadedFile = req.nameOfUploadedFile + " " + myFileName,
     cb(null, myFileName )
   }
@@ -23,7 +23,7 @@ const upload = multer({
   fileFilter: function (req, file, cb) {
     checkFileType (file, cb);
   }
-}).array('file_upload');
+}).any([{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }, { name: 'galy', maxCount: 8 }])
 
 function checkFileType(file, cb) {
   const filetypes = /jpg|jpeg|png|pdf/;
@@ -77,9 +77,9 @@ router.put('/edit-user-status', Auth.isUser, Auth.isAdmin, UserController.editUs
 router.post('/edit-user-try', Auth.isUser, UserController.editUserTry);
 router.post('/upload', Auth.isUser, (req, res, next)=>{
   console.log("whut",)
+  console.log("NAME OF UPLOADED",req.nameOfUploadedFile)
     upload(req, res, next, (err)=> {
 
-      console.log("NAME OF UPLOADED",req.nameOfUploadedFile)
         if (err){
             res.render('index', {
                 msg : err
