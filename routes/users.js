@@ -6,6 +6,7 @@ const Auth = require('../middlewares/authentification.js')
 let path = require('path')
 const multer  = require('multer');
 const { response } = require('../app.js');
+const { userInfo } = require('os');
 
 
 
@@ -19,10 +20,10 @@ router.get('/', function(req, res, next) {
 
 /////////////////////////////////set storage
 const storage = multer.diskStorage({
-  destination: './public/uploads',
-  filename :function  (req, file, cb){
+  destination:  './public/uploads',
+  filename :function  (req, file, cb){ 
     console.log(path.extname)
-    cb(null, file.fieldname + '-' + Date.now()   + path.extname(file.originalname ) );
+    cb(null,/*  file.fieldname + '-'+   */req.user._id  /* + path.extname(file.originalname ) */ + '-' + Date.now() + '-' + file.originalname );
   }
 });
   
@@ -31,7 +32,23 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-}).single('file_upload');
+  limit : {fileSize : 100000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType (file, cb);
+  }
+}).array('file_upload');
+
+function checkFileType(file, cb) {
+  const filetypes = /jpg|jpeg|png|pdf/;
+  const mimetype = filetypes.test(file.mimetype)
+  
+  if(mimetype){
+    return cb (null,true)
+  }
+  else {
+    cb(null,false)
+  }
+}
 
 
 ///public folder
@@ -60,10 +77,10 @@ router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserControler.editUser
 
 /* router.post('/files-proof', Auth.isUser, UserControler.filesProof); */
 
-router.post('/files-proof', (req, res)=>{
+router.post('/files-proof',Auth.isUser, (req, res)=>{
   upload(req, res, (err)=> {
       if (err){
-          res.render('index', {
+          res.send('index', {
               msg : err
           });
       } else {
