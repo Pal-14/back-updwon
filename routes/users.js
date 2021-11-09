@@ -5,12 +5,13 @@ const UserModel = require('../models/userModel.js')
 const Auth = require('../middlewares/authentification.js')
 let path = require('path')
 
+
 const multer = require ('multer');
 let myFileName = "";
 const storage = multer.diskStorage( {
   destination:'./public/uploads',
   filename: function (req, file, cb){
-    myFileName = file.fieldname + "$" + req.user._id + 'yoshh' + Date.now() + file.originalname,
+    myFileName = file.fieldname + "$" + req.user._id + 'yoshh' + Date.now() +path.extname(file.originalname),
     req.nameOfUploadedFile =  myFileName,
     cb(null, myFileName )
   }
@@ -21,7 +22,7 @@ const upload = multer({
   fileFilter: function (req, file, cb) {
     checkFileType (file, cb);
   }
-}).any([{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }, { name: 'galy', maxCount: 8 }])
+}).any('file:')
 
 function checkFileType(file, cb) {
   const filetypes = /jpg|jpeg|png|pdf/;
