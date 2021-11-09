@@ -91,7 +91,7 @@ router.post('/upload', Auth.isUser, (req, res, next)=>{
         next()
     }) 
 },
-UserController.testPrivateController)
+UserController.stockDocument)
 
 
 

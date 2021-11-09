@@ -65,8 +65,29 @@ uploadDocument(res, req, next)  {
   })  
 },
 
-stockDocument(res, req, next){
-
+stockDocument(req, res, next){
+  const fileName = req.nameOfUploadedFile
+  const fileUrl = `http://localhost:5000/view-docs/${fileName}`
+  if (!fileName || !fileUrl) {
+    return res
+      .status(400)
+      .send({ success: false, message: "Champs néccessaires non indiqués" });
+  }
+  return UserModel.updateOne(
+    {_id:req._id},
+    {$set:{
+      userName:fileUrl
+    }}
+  )
+    .then(()=>{
+      res
+        .status(200)
+        .send({
+          success:true,
+          message:"ok"
+        });
+    })
+    .catch
 
 },
 
