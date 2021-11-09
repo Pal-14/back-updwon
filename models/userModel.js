@@ -24,6 +24,20 @@ const userSchema = mongoose.Schema({
     //streetNumber:String,
     //streetName:String,
   },
+
+  documents: {
+    status:{
+    hasProvidedIdCard:Boolean,
+    hasProvidedBankDetails:Boolean,
+    hasProvidedProofOfAdress:Boolean
+    },
+    idCard:[]
+    
+
+
+
+
+  },
   ownedItems: [{ itemId: String, tokenQuantity: Number, purchaseDate: String }],
 });
 

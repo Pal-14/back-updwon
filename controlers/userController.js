@@ -4,16 +4,7 @@ const bcrypt = require("bcrypt");
 const SALTS = 10;
 const path = require('path')
 
-const multer = require ('multer');
-const storage = multer.diskStorage({
-  destination:'../public/uploads',
-  filename: function (req, file, cb){
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-  }
-})
-const upload = multer({
-  storage:storage,
-}).single('file_upload');
+
 
 function handleServerError(err, res) {
   console.log(err);
@@ -64,10 +55,17 @@ uploadDocument(res, req, next)  {
     if (err){
         res.sendStatus(400)
     } else {
-        console.log(req.file);
-        res.send(`Vos fichiers compte`);
+      console.log(req.file);
+      res.send({success:true,
+          message:`Envoi du fichier : OK`,
+          log:`file log ${req.file}`});
     }
   })  
+},
+
+stockDocument(res, req, next){
+
+
 },
 
   
@@ -312,14 +310,16 @@ uploadDocument(res, req, next)  {
   },
 
   editUserAdminStatus(req, res, next){
-    let {newUserAdminStatus, targetUserId} = req.body;
-    if (!newUserAdminStatus){
+    let { targetUserId, keyOfPropertyToChange, targetValue} = req.body;
+    if (!newUserAdminStatus, keyOfPropertyToChange, targetValue){
       return res.status(400).send({
         success:false,
         message: "Nope nope nope nope. No user Info",
         logOfInputValue: `Log it bb ${newUserAdminStatus}`
       })
     }
+    
+
     return UserModel.updateOne(
       {_id: targetUserId},
       {infos:{

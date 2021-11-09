@@ -3,21 +3,34 @@ const UserController = require('../controlers/UserController.js');
 var router = express.Router();
 const UserModel = require('../models/userModel.js')
 const Auth = require('../middlewares/authentification.js')
+let path = require('path')
 
-const multer = require('multer')
-
-
-
+const multer = require ('multer');
 const storage = multer.diskStorage({
-  destination:'../public/uploads',
+  destination:'./public/uploads',
   filename: function (req, file, cb){
-    cb(null, file.filename + '-' + Date.now() + path.extname(file.originalname))
+    cb(null, req.user._id + 'yoshh' + Date.now() + file.originalname)
   }
 })
-
 const upload = multer({
-  storage:storage,
-}).single('file_upload');
+  storage: storage,
+  limit : {fileSize : 100000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType (file, cb);
+  }
+}).array('file_upload');
+
+function checkFileType(file, cb) {
+  const filetypes = /jpg|jpeg|png|pdf/;
+  const mimetype = filetypes.test(file.mimetype)
+  
+  if(mimetype){
+    return cb (null,true)
+  }
+  else {
+    cb(null,false)
+  }
+}
 
 
 /* GET USERS LISTING // DEV ROUTE SO FRONT END TEAM CAN RECEIVE DATA AND TRY STUFF // WILL BE REMOVED */
@@ -48,7 +61,7 @@ router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserController.testPriva
 
 router.put('/edit-user', Auth.isUser, UserController.editUser);
 router.put('/edit-user-coin', Auth.isUser, UserController.editUserCoin);
-router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserController.editUserAdminStatus);
+router.put('/edit-user-status', Auth.isUser, Auth.isAdmin, UserController.editUserAdminStatus);
 
 /* router.post('/files-proof', Auth.isUser, type, UserController.filesProof);
  */
@@ -57,8 +70,21 @@ router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserController.editUse
 /* ROUTE TRIES */
 /* router.put('/edit-user-your-choice', Auth.isUser, UserController.editUserYourChoice ) */
 router.post('/edit-user-try', Auth.isUser, UserController.editUserTry);
-router.post('/upload-doc-rom', /* Auth.isUser, */ UserController.uploadDocument)
-
+router.post('/upload', Auth.isUser, (req, res, next)=>{
+  
+  upload(req, res, next, (err)=> {
+    if (err){
+      console.log('youpo') 
+      console.log(file.originalname)
+      res.render('index', {
+                msg : err
+            });
+        }
+        console.log(file.originalname)
+        next()
+      });
+    }, 
+UserController.testPrivateController)
 
 
 module.exports = router;
