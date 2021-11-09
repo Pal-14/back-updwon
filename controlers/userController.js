@@ -40,8 +40,9 @@ const UserController = {
 
   testPrivateController(req, res, next) {
     
-    console.log(`USER FIRST NAME IS : ${req.user.firstName}`);
-    next();
+    console.log(`USER FIRST NAME IS : ${req.user.firstName}`)
+    return res
+    .send({success:true, message:"allgood with controller"});
     
   },
 

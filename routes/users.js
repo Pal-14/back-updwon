@@ -6,10 +6,15 @@ const Auth = require('../middlewares/authentification.js')
 let path = require('path')
 
 const multer = require ('multer');
-const storage = multer.diskStorage({
+let myFileName = "";
+const storage = multer.diskStorage( {
+
+  
   destination:'./public/uploads',
   filename: function (req, file, cb){
-    cb(null, req.user._id + 'yoshh' + Date.now() + file.originalname)
+    myFileName = req.user._id + 'yoshh' + Date.now() + file.originalname,
+    req.nameOfUploadedFile = req.nameOfUploadedFile + " " + myFileName,
+    cb(null, myFileName )
   }
 })
 const upload = multer({
@@ -70,18 +75,26 @@ router.put('/edit-user-status', Auth.isUser, Auth.isAdmin, UserController.editUs
 /* ROUTE TRIES */
 /* router.put('/edit-user-your-choice', Auth.isUser, UserController.editUserYourChoice ) */
 router.post('/edit-user-try', Auth.isUser, UserController.editUserTry);
-router.post('/upload', Auth.isUser, (req, res)=>{
-  console.log("whut",req.user)
-    upload(req, res, (err)=> {
+router.post('/upload', Auth.isUser, (req, res, next)=>{
+  console.log("whut",)
+    upload(req, res, next, (err)=> {
+
+      console.log("NAME OF UPLOADED",req.nameOfUploadedFile)
         if (err){
             res.render('index', {
                 msg : err
             });
-        } else {
-            res.send({success:true,
-                 message:`Envoi du fichier : OK`,
-                log:`file log ${res}`});
         }
+        res
+        .status(200)
+        .send({success:true,
+        message:`Envoi du fichier : OK`,
+        log:`file log ${req.file}`,})
+        next()
     }) 
-})
+},
+UserController.testPrivateController)
+
+
+
 module.exports = router;
