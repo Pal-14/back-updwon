@@ -67,7 +67,7 @@ uploadDocument(res, req, next)  {
 
 stockDocument(req, res, next){
   const fileName = req.nameOfUploadedFile
-  const fileUrl = `http://localhost:5000/view-docs/${fileName}`
+  const fileUrl = `http://localhost:5000/get-public-pic/${fileName}`
   if (!fileName || !fileUrl) {
     return res
       .status(400)
@@ -75,8 +75,8 @@ stockDocument(req, res, next){
   }
   return UserModel.updateOne(
     {_id:req._id},
-    {$set:{
-      userName:fileUrl
+    {$push:{
+      "documents.documentsUrl":fileUrl
     }}
   )
     .then(()=>{
@@ -87,8 +87,15 @@ stockDocument(req, res, next){
           message:"ok"
         });
     })
-    .catch
-
+    .catch(()=>{
+      res
+        .status(400)
+        .send({
+          success: false,
+          message:"Erreur",
+          debug:`${req.user._id}`,
+        });
+      });
 },
 
   

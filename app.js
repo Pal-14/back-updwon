@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.get('/mescouillesLeLien/:name', function (req, res, next) {
+app.get('/get-public-pic/:name', function (req, res, next) {
   let options = {
     root: path.join(__dirname, 'public/uploads'),
     dotfiles: 'deny',
@@ -41,7 +41,7 @@ app.get('/mescouillesLeLien/:name', function (req, res, next) {
 })
 
 
-app.get('/jambonLeLien/:name', function (req, res, next) {
+app.get('/get-private-pic/:name', function (req, res, next) {
   let options = {
     root: path.join(__dirname, 'private/normando'),
     dotfiles: 'deny',

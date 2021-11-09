@@ -11,7 +11,7 @@ let myFileName = "";
 const storage = multer.diskStorage( {
   destination:'./public/uploads',
   filename: function (req, file, cb){
-    myFileName = file.fieldname + "$" + req.user._id + 'yoshh' + Date.now() +path.extname(file.originalname),
+    myFileName = file.fieldname + "$" + req.user._id + '$' + Date.now() +path.extname(file.originalname),
     req.nameOfUploadedFile =  myFileName,
     cb(null, myFileName )
   }
