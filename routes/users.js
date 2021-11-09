@@ -1,35 +1,17 @@
 var express = require('express');
-const UserControler = require('../controlers/userControler.js');
+const UserController = require('../controlers/UserController.js');
 var router = express.Router();
 const UserModel = require('../models/userModel.js')
 const Auth = require('../middlewares/authentification.js')
 let path = require('path')
-const multer  = require('multer');
-const { response } = require('../app.js');
-const { userInfo } = require('os');
 
-
-
-/* GET USERS LISTING // DEV ROUTE SO FRONT END TEAM CAN RECEIVE DATA AND TRY STUFF // WILL BE REMOVED */
-router.get('/', function(req, res, next) {
-  UserModel
-    .find({}).then((response)=>{
-      res.send(response)
-  });
-});
-
-/////////////////////////////////set storage
+const multer = require ('multer');
 const storage = multer.diskStorage({
-  destination:  './public/uploads',
-  filename :function  (req, file, cb){ 
-    console.log(path.extname)
-    cb(null,/*  file.fieldname + '-'+   */req.user._id  /* + path.extname(file.originalname ) */ + '-' + Date.now() + '-' + file.originalname );
+  destination:'./public/uploads',
+  filename: function (req, file, cb){
+    cb(null, req.user._id + 'yoshh' + Date.now() + file.originalname)
   }
-});
-  
-
-/////init upload
-
+})
 const upload = multer({
   storage: storage,
   limit : {fileSize : 100000 },
@@ -51,18 +33,24 @@ function checkFileType(file, cb) {
 }
 
 
-///public folder
-router.use(express.static('/public'))//////////////
+/* GET USERS LISTING // DEV ROUTE SO FRONT END TEAM CAN RECEIVE DATA AND TRY STUFF // WILL BE REMOVED */
+router.get('/', function(req, res, next) {
+  UserModel
+    .find({}).then((response)=>{
+      res.send(response)
+  });
+});
+
 
 
 /* PUBLIC ROUTES  */
-router.post('/login', UserControler.login);
-router.post('/signup', UserControler.signup);
+router.post('/login', UserController.login);
+router.post('/signup', UserController.signup);
 
 /* PRIVATE ROUTES  */
-router.get('/virgitest', Auth.isUser, UserControler.testPrivateController)
-router.get('/check-token', Auth.isUser, UserControler.getInfos)
-router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivateController, function(req, res, next){
+router.get('/virgitest', Auth.isUser, UserController.testPrivateController)
+router.get('/check-token', Auth.isUser, UserController.getInfos)
+router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserController.testPrivateController, function(req, res, next){
   UserModel
     .find({}).then((response)=>{
       res.send(response)
@@ -71,30 +59,32 @@ router.get('/admin-listing', Auth.isUser, Auth.isAdmin, UserControler.testPrivat
 
 
 
-router.put('/edit-user', Auth.isUser, UserControler.editUser);
-router.put('/edit-user-coin', Auth.isUser, UserControler.editUserCoin);
-router.put('/edit-user-admin', Auth.isUser, Auth.isAdmin, UserControler.editUserAdminStatus);
+router.put('/edit-user', Auth.isUser, UserController.editUser);
+router.put('/edit-user-coin', Auth.isUser, UserController.editUserCoin);
+router.put('/edit-user-status', Auth.isUser, Auth.isAdmin, UserController.editUserAdminStatus);
 
-/* router.post('/files-proof', Auth.isUser, UserControler.filesProof); */
-
-router.post('/files-proof',Auth.isUser, (req, res)=>{
-  upload(req, res, (err)=> {
-      if (err){
-          res.send('index', {
-              msg : err
-          });
-      } else {
-          console.log(req.file);
-          res.send(`Vos fichiers sont sont en traitement dans notre base de donnés.
-          Vous pouvez continuer de visiter notre site en attendant
-           qu'un administrateur valide votre compte`);
-      }
-  }) 
-})
+/* router.post('/files-proof', Auth.isUser, type, UserController.filesProof);
+ */
 
 
 /* ROUTE TRIES */
-router.put('/edit-user-your-choice', Auth.isUser, UserControler.editUserYourChoice )
+/* router.put('/edit-user-your-choice', Auth.isUser, UserController.editUserYourChoice ) */
+router.post('/edit-user-try', Auth.isUser, UserController.editUserTry);
+router.post('/upload', Auth.isUser, (req, res, next)=>{
+  
+  upload(req, res, next, (err)=> {
+    if (err){
+      console.log('youpo') 
+      console.log(file.originalname)
+      res.render('index', {
+                msg : err
+            });
+        }
+        console.log(file.originalname)
+        next()
+      });
+    }, 
+UserController.testPrivateController)
 
 
 module.exports = router;

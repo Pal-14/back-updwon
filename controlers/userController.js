@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const SALTS = 10;
+const path = require('path')
+
 
 
 function handleServerError(err, res) {
@@ -20,7 +22,7 @@ function readToken(req) {
   else return null;
 }
 
-const UserControler = {
+const UserController = {
   /* BONUS MIDDLEWARES IF NEED TO LOG BODY OR WANT TO TRY ADMIN SYSTEM */
   logBody(req, res, next) {
     console.log(req.body);
@@ -45,6 +47,28 @@ const UserControler = {
 
   /* ************* PUBLIC ROUTES **************** */
 
+/*   ROUTE TRY UPLOADS 
+ */
+
+uploadDocument(res, req, next)  {
+  upload(req, res, (err) => {
+    if (err){
+        res.sendStatus(400)
+    } else {
+      console.log(req.file);
+      res.send({success:true,
+          message:`Envoi du fichier : OK`,
+          log:`file log ${req.file}`});
+    }
+  })  
+},
+
+stockDocument(res, req, next){
+
+
+},
+
+  
   /* LOGIN */
 
   login(req, res, next) {
@@ -172,15 +196,21 @@ const UserControler = {
     UserModel.updateOne(
       { _id: req._id }, 
       { userName:userName,
-
         infos: {
+          isVerifiedByAdmin:req.user.infos.isVerifiedByAdmin,
+          hasProvidedAllDocuments: req.user.infos.hasProvidedAllDocuments,
+          isAdmin:req.user.infos.isAdmin,
+          isVerified:req.user.infos.isVerified,
+          /* NEED TO FIND A WAY TO EDIT SPECIFIC VALUES WITHIN AN OBJECT */
           phoneNumber: phoneNumber,
           dateOfBirth: dateOfBirth,
+
           adress: adress,
           city: city,
           postalCode: postalCode,
           country: country,
         },
+        ownedItems: [{ itemId:"", tokenQuantity:0, purchaseDate:"" }],
       }
     )
       .then(() => {
@@ -192,12 +222,44 @@ const UserControler = {
               "Vos modifications ont bien été effectuées.",
           });
       })
-      .catch(() => {
+      .catch((err) => {
         res
           .status(400)
           .send({ success: false, message: "Erreur modification" });
       });
   },
+
+  editUserTry(req, res, next) {
+    let { editValue, keyToEdit } = req.body;
+
+    if (!editValue ) {
+      return res.status(400).send({
+        success: false,
+        message: "Les champs obligatoires ne sont pas tous remplis."
+      });
+    }
+    UserModel.updateOne(
+      { _id: req._id }, 
+      { $set: {
+        [keyToEdit]:"WOOOOO",}}
+    )
+      .then(() => {
+        res
+          .status(200)
+          .send({
+            success: true,
+            message:
+              "Vos modifications ont bien été effectuées.",
+          });
+      })
+      .catch((err) => {
+        res
+          .status(400)
+          .send({ success: false, message: "Erreur modification" });
+      });
+  },
+
+
 
 
 
@@ -233,7 +295,7 @@ const UserControler = {
           .status(200)
           .send({
             success: true,
-            message: `ok new user Balance is ${userCoinBalanceAfterOperation} `,
+            message: `ok new user Balance is ${userCoinBalanceAfterOperation}`,
           });
       })
       .catch(() => {
@@ -248,14 +310,16 @@ const UserControler = {
   },
 
   editUserAdminStatus(req, res, next){
-    let {newUserAdminStatus, targetUserId} = req.body;
-    if (!newUserAdminStatus){
+    let { targetUserId, keyOfPropertyToChange, targetValue} = req.body;
+    if (!newUserAdminStatus, keyOfPropertyToChange, targetValue){
       return res.status(400).send({
         success:false,
         message: "Nope nope nope nope. No user Info",
         logOfInputValue: `Log it bb ${newUserAdminStatus}`
       })
     }
+    
+
     return UserModel.updateOne(
       {_id: targetUserId},
       {infos:{
@@ -286,40 +350,7 @@ const UserControler = {
 
   
 
-  editUserYourChoice(req, res, next){
-    let {pathOfKeyToEdit, incomingChangeValue} = req.body;
-
-    /* function exist(collection, target, id) {
-      const Model = require(`../models/${collection}`);
-      let queryParam = {};
-      queryParam[target] = id;
-      return Model.find(queryParam).then((data) => {
-        if (data.length > 0) {
-          return true;
-        }
-        return false;
-      });
-    } */
-
-    /* Utilisateur.updateOne(
-      { _id: req.body._id }, //filtre
-      {
-        pseudo: req.body.pseudo, //a changer
-        age: req.body.age,
-        genre: req.body.genre,
-        bio: req.body.bio,
-      }
-    )
-      .then(function () {
-        res.send({ success: true, message: "Modification" });
-      })
-      .catch(function () {
-        res.status(400).send({ success: false, message: "Erreur modification" });
-      }); */
-
-
-    console.log(pathOfKeyToEdit, incomingChangeValue)
-  },
+  
 
   filesProof(req, res, next) {
     console.log("je suis ici");
@@ -330,4 +361,14 @@ const UserControler = {
   }
 };
 
-module.exports = UserControler;
+module.exports = UserController;
+
+
+
+
+
+
+
+
+
+

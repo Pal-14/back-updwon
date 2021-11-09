@@ -11,6 +11,10 @@ function readToken(req) {
     else return null;
 }
 
+function handleServerError(err, res) {
+  console.log(err);
+  return res.sendStatus(500);
+}
 
 
 
@@ -47,6 +51,7 @@ const Auth = {
         .status(403)
         .send({ succes: false, message: "Vous ne disposez pas de droits suffisants. N'est pas un admin", log:`${req.user.infos.isAdmin}`});
     next();
+    
   },
 }
 
