@@ -31,7 +31,9 @@ const userSchema = mongoose.Schema({
     hasProvidedBankDetails:Boolean,
     hasProvidedProofOfAdress:Boolean
     },
-    idCard:[]
+    idCard:["http://adresseenligne/chemin/fjdhfkjdhk.png",],
+    bankDetails:[],
+    proofOfAdress:[],
     
 
 
