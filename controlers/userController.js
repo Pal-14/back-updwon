@@ -41,6 +41,7 @@ const UserController = {
   testPrivateController(req, res, next) {
     
     console.log(`USER FIRST NAME IS : ${req.user.firstName}`)
+    console.log(`NEW FILE NAME IS :${req.nameOfUploadedFile} `)
     return res
     .send({success:true, message:"allgood with controller"});
     
@@ -157,7 +158,16 @@ stockDocument(res, req, next){
               city:"",
               postalCode:"",
               country:!country?"":country,
-            }
+            },
+            documents: {
+              status:{
+              hasProvidedDocumentsForReview:false,
+              hasProvidedValidIdCard:false,
+              hasProvidedValidBankDetails:false,
+              hasProvidedValidProofOfAdress:false
+              },
+              documentsUrl:["http://adresseenligne/chemin/fjdhfkjdhk.png",],
+            },
           })
             .then((newUser) => {
               jwt.sign(

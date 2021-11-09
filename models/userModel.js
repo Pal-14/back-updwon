@@ -27,18 +27,12 @@ const userSchema = mongoose.Schema({
 
   documents: {
     status:{
-    hasProvidedIdCard:Boolean,
-    hasProvidedBankDetails:Boolean,
-    hasProvidedProofOfAdress:Boolean
+    hasProvidedDocumentsForReview:Boolean,
+    hasProvidedValidIdCard:Boolean,
+    hasProvidedValidBankDetails:Boolean,
+    hasProvidedValidProofOfAdress:Boolean
     },
-    idCard:["http://adresseenligne/chemin/fjdhfkjdhk.png",],
-    bankDetails:[],
-    proofOfAdress:[],
-    
-
-
-
-
+    documentsUrl:["http://adresseenligne/chemin/fjdhfkjdhk.png",],
   },
   ownedItems: [{ itemId: String, tokenQuantity: Number, purchaseDate: String }],
 });
