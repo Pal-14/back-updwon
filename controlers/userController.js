@@ -352,7 +352,7 @@ stockDocument(req, res, next){
 
   editUserAdminStatus(req, res, next){
     let { targetUserId, keyOfPropertyToChange, targetValue} = req.body;
-    if (!targetUserId, keyOfPropertyToChange, targetValue){
+    if (!targetUserId || !keyOfPropertyToChange || !targetValue){
       return res.status(400).send({
         success:false,
         message: "Nope nope nope nope. No user Info",
