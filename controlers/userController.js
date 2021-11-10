@@ -371,7 +371,7 @@ stockDocument(req, res, next){
           .status(200)
           .send({
             success: true,
-            message:`User  successfully changed. User with _id : ${targetUserId}. Admin status is now ${newUserAdminStatus}`
+            message:`User  successfully changed. User with _id : ${targetUserId}. Admin status is now ${targetValue}`
           })
       })
       .catch((err) =>{
@@ -379,7 +379,7 @@ stockDocument(req, res, next){
           .status(400)
           .send({
             success:false,
-            message:`Did not go well. User ${keyOfPropertyToChange}n status wasnt changed to ${targetValue
+            message:`Did not go well. User ${keyOfPropertyToChange} status wasnt changed to ${targetValue
             }. ${targetUserId} Err Log : ${err}`
 
           })
