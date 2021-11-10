@@ -78,7 +78,7 @@ stockDocument(req, res, next){
   return UserModel.updateOne(
     {_id:req._id},
     {$push:{
-      "documents.documentsUrl":fileUrl
+      "documents.documentsUrl":myArray
     }}
   )
     .then(()=>{
