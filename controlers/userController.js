@@ -363,7 +363,7 @@ stockDocument(req, res, next){
       {_id: targetUserId},
 
       { $set: {
-        [keyOfPropertyToChange]:"WOOOOO"}
+        [keyOfPropertyToChange]:targetValue}
       }
     )
       .then(()=>{
@@ -371,7 +371,7 @@ stockDocument(req, res, next){
           .status(200)
           .send({
             success: true,
-            message:`User  successfully changed. User with _id : ${targetUserId}. Admin status is now ${targetValue}`
+            message:`User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${targetValue}`
           })
       })
       .catch((err) =>{
@@ -379,7 +379,7 @@ stockDocument(req, res, next){
           .status(400)
           .send({
             success:false,
-            message:`Did not go well. User ${keyOfPropertyToChange} status wasnt changed to ${targetValue
+            message:`Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${targetValue
             }. ${targetUserId} Err Log : ${err}`
 
           })
