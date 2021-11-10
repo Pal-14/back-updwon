@@ -363,10 +363,10 @@ stockDocument(req, res, next){
 
     return UserModel.updateOne(
       {_id: targetUserId},
-      {infos:{
-        [keyOfPropertyToChange]:targetValue
-        
-      }}
+
+      { $set: {
+        [infos.keyOfPropertyToChange]:"WOOOOO",}
+      }
     )
       .then(()=>{
         res
