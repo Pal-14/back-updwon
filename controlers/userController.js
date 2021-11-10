@@ -365,7 +365,7 @@ stockDocument(req, res, next){
       {_id: targetUserId},
 
       { $set: {
-        [infos.keyOfPropertyToChange]:"WOOOOO",}
+        [keyOfPropertyToChange]:"WOOOOO",}
       }
     )
       .then(()=>{
