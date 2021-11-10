@@ -66,8 +66,10 @@ uploadDocument(res, req, next)  {
 },
 
 stockDocument(req, res, next){
+  const myArray = req.myArray
   const fileName = req.nameOfUploadedFile
   const fileUrl = `http://localhost:5000/get-public-pic/${fileName}`
+  console.log(myArray)
   if (!fileName || !fileUrl) {
     return res
       .status(400)
@@ -362,7 +364,8 @@ stockDocument(req, res, next){
     return UserModel.updateOne(
       {_id: targetUserId},
       {infos:{
-        isAdmin:newUserAdminStatus
+        [keyOfPropertyToChange]:targetValue
+        
       }}
     )
       .then(()=>{

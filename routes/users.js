@@ -8,10 +8,13 @@ let path = require('path')
 
 const multer = require ('multer');
 let myFileName = "";
+let myArray = []
 const storage = multer.diskStorage( {
   destination:'./public/uploads',
   filename: function (req, file, cb){
     myFileName = file.fieldname + "$" + req.user._id + '$' + Date.now() +path.extname(file.originalname),
+    myArray.push(myFileName)    ;
+    req.myArray = myArray
     req.nameOfUploadedFile =  myFileName,
     cb(null, myFileName )
   }
