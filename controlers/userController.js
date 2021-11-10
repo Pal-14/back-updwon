@@ -356,11 +356,9 @@ stockDocument(req, res, next){
       return res.status(400).send({
         success:false,
         message: "Nope nope nope nope. No user Info",
-        logOfInputValue: `Log it bb ${targetValue}`
+        logOfInputValue: `Log it bb. ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`
       })
     }
-    
-
     return UserModel.updateOne(
       {_id: targetUserId},
 
