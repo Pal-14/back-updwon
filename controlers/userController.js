@@ -196,7 +196,7 @@ stockDocument(req, res, next){
               hasProvidedValidBankDetails:false,
               hasProvidedValidProofOfAdress:false
               },
-              documentsUrl:["http://adresseenligne/chemin/fjdhfkjdhk.png",],
+              documentsUrl:[],
             },
           })
             .then((newUser) => {

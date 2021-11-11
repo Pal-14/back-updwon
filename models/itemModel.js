@@ -6,6 +6,7 @@ const itemSchema = mongoose.Schema({
         name: String, 
         adress:String,
         city:String,
+        description:String,
 
         type:String,
         livingArea:String,
@@ -33,7 +34,11 @@ const itemSchema = mongoose.Schema({
     itemFundingStatus :{
       itemUpForReviewByAdmin:Boolean,
       itemDateOfSubmitByUser:String,
+      itemIsAcceptedForFunding:Boolean,
+      itemIsRejectedForFunding:Boolean,
+      iteam
     },
+
     
     itemFundingAdminOnly:{
         initialData:{
