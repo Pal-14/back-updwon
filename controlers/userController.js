@@ -350,6 +350,8 @@ stockDocument(req, res, next){
       });
   },
 
+  
+
   editUserAdminStatus(req, res, next){
     let { targetUserId, keyOfPropertyToChange, targetValue} = req.body;
     if (!targetUserId || !keyOfPropertyToChange || !targetValue){
@@ -384,9 +386,6 @@ stockDocument(req, res, next){
 
           })
       })
-
-
-
   },
 
   

@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema({
     isVerifiedByAdmin: Boolean,
     hasProvidedAllDocuments: Boolean,
     isAdmin:Boolean,
-    isVerified:String,
+    
     phoneNumber: String,
     dateOfBirth:String,
 
@@ -32,7 +32,7 @@ const userSchema = mongoose.Schema({
     hasProvidedValidBankDetails:Boolean,
     hasProvidedValidProofOfAdress:Boolean
     },
-    documentsUrl:["http://adresseenligne/chemin/fjdhfkjdhk.png",],
+    documentsUrl:[String,],
   },
   ownedItems: [{ itemId: String, tokenQuantity: Number, purchaseDate: String }],
 });

@@ -14,8 +14,7 @@ function readToken(req) {
 function handleServerError(err, res) {
   console.log("ERREUR",err);
   return res.sendStatus(500);
-}
-
+  }
 
 
 const Auth = {
