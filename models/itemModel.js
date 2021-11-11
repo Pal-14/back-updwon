@@ -14,7 +14,7 @@ const itemSchema = mongoose.Schema({
         garage:Number,
         parking:Number,
     },
-    itemPictures: [],
+    itemPicturesFromUser: [],
     funding:{
         initialData:{
             priceInEuros:Number,
@@ -27,6 +27,7 @@ const itemSchema = mongoose.Schema({
             fundingEndDeadlineDate:String,
             fundingGoalReachedDate:String, 
         }
+        itemPictures
     }
 
 })

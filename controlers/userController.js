@@ -86,7 +86,7 @@ stockDocument(req, res, next){
         .status(200)
         .send({
           success:true,
-          message:"ok"
+          message:"Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h."
         });
     })
     .catch(()=>{
