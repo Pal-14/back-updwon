@@ -1,21 +1,41 @@
-const { compare } = require("bcrypt");
 const mongoose = require("mongoose");
 
 const itemSchema = mongoose.Schema({
-    name: String, 
+   
     itemInfos: {
+        name: String, 
         adress:String,
         city:String,
+
         type:String,
         livingArea:String,
         rooms:String,
         bedrooms:String,
+
+
         terraceSurface:Number,
         garage:Number,
         parking:Number,
+        swimmingPool:Boolean,
     },
+    itemUserInfos:{
+        userId:String, 
+        userFirstName:String, 
+        userLastName:String, 
+        userEmail: String, 
+        userVerifiedStatus:Boolean,
+    },
+
     itemPicturesFromUser: [],
-    funding:{
+
+    itemDocumentsFromUser:[],
+
+    itemFundingStatus :{
+      itemUpForReviewByAdmin:Boolean,
+      itemDateOfSubmitByUser:String,
+    },
+    
+    itemFundingAdminOnly:{
         initialData:{
             priceInEuros:Number,
             initialTokenAmount:Number,
@@ -26,10 +46,9 @@ const itemSchema = mongoose.Schema({
             fundingStartDate:String, 
             fundingEndDeadlineDate:String,
             fundingGoalReachedDate:String, 
-        }
-        itemPictures
+        },
+        itemPicturesSelectedByAdmin:[string,],
     }
-
 })
 
 const ItemModel = mongoose.model("users", itemSchema);
