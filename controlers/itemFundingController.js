@@ -95,7 +95,7 @@ createFunding(req, res, next) {
     city, 
     postalCode, 
     description,
-    type, 
+    typeOfItem, 
     livingArea, 
     rooms, 
     bedrooms, 
@@ -112,7 +112,10 @@ createFunding(req, res, next) {
     askedPriceByUser,
     initialTokenAmount,
     fundingStartDate,
-    fundingEndDeadlineDate/*  RAJOUTER EN FRONT */
+    fundingEndDeadlineDate,/*  RAJOUTER EN FRONT */
+
+    /* KEYS FOR DEV, WILL BE REMOVED */
+    isPublic,
 
   } = req.body;
   if (
@@ -121,7 +124,7 @@ createFunding(req, res, next) {
     !city ||
     !postalCode ||
     !description ||
-    !type /* ||
+    !typeOfItem /* ||
     !livingArea ||
     !rooms ||
     !bedrooms ||
@@ -143,7 +146,8 @@ createFunding(req, res, next) {
     });
   }
     return ItemFundingModel.create({
-        itemFundingStatus :false,
+      isPublic: !isPublic ? false : isPublic,
+      itemFundingStatus : {
         isUpForReviewByAdmin:true,
         isPublished:false,
         isCurrentlyBeingFunded:false,
@@ -152,44 +156,46 @@ createFunding(req, res, next) {
         initialData:{
             priceInEuros:askedPriceByUser,
             initialTokenAmount:1000,
-            initialSingleTokenValueInEuros: parseInt(askedPriceByUser/initialTokenAmount),
+            initialSingleTokenValueInEuros: 25/* arseInt(askedPriceByUser/initialTokenAmount) */,
             
-            fundingStartDate:"12/01/2021", 
-            fundingEndDeadlineDate:24,
-            fundingGoalReachedDate:String, 
+            fundingStartDate:!fundingStartDate ? "12/01/2021": fundingStartDate,
+            fundingEndDeadlineDate:!fundingEndDeadlineDate ? "12/03/2021": fundingEndDeadlineDate,
+            fundingGoalReachedDate:"", 
         },
-        fundingProgessData:{
-            remainingAvailableToken:Number,
+        fundingProgressData:{
+            remainingAvailableToken:1000,
+            numberOfTokenSold:0,
             tokenBuyOrders:[/* {userID:String, tokenAmount:Number, transactionId:String} */],
-            remainingTime:Number,
+            remainingTime:"",
         },
+      },
 
     itemInfos: {
-        name: String, 
-        adress:String,
-        city:String,
-        postalCode:String,
-        description:String,/*  TXT AREA IF POSS */
+        name:name, 
+        adress:adress,
+        city:city,
+        postalCode:postalCode,
+        description:description,
 
-        type:String,
-        livingArea:Number,
-        rooms:String,
-        bedrooms:String,
+        typeOfItem:typeOfItem,
+        livingArea:livingArea,
+        rooms:rooms,
+        bedrooms:bedrooms,
 
-        terrace:Boolean,
-        terraceSurface:Number,
-        garage:Boolean,
-        garageNumber:Number,
-        parking:Boolean,
-        parkingNumber:Number,
-        swimmingPool:Boolean,
+        terrace:terrace,
+        terraceSurface:terraceSurface,
+        garage:garage,
+        garageNumber:!garageNumber ? 0 : garageNumber,
+        parking:parking,
+        parkingNumber:!parkingNumber ? 0 : parkingNumber,
+        swimmingPool:swimmingPool,
 
-        otherSpecialPerks:String,
+        otherSpecialPerks:!otherSpecialPerks ? "": otherSpecialPerks,
 
         itemPicturesFromUser: [],
         itemPicturesSelectedByAdmin:[],
 
-        itemProposalId:String,
+        itemProposalId:"",
     }
 
   })
@@ -206,7 +212,8 @@ createFunding(req, res, next) {
       .status(400)
       .send({
         success: false,
-        message: "Erreur lors de la soumission de votre proposition."
+        message: "Erreur lors de la soumission de votre proposition.",
+        log:`LOG ERR : ${err}`
       })
   })
 

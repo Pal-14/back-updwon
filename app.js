@@ -8,6 +8,7 @@ require('./connectDb')
 
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
+let itemsRouter = require('./routes/items');
 
 let app = express();
 
@@ -63,6 +64,7 @@ app.get('/get-private-pic/:name', function (req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/items', itemsRouter);
 
 
 

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const itemFundingSchema = mongoose.Schema({
+    isPublic:Boolean,
     
     itemFundingStatus :{
         isUpForReviewByAdmin:Boolean,
@@ -17,10 +18,10 @@ const itemFundingSchema = mongoose.Schema({
             fundingEndDeadlineDate:String,
             fundingGoalReachedDate:String, 
         },
-        fundingProgessData:{
+        fundingProgressData:{
             remainingAvailableToken:Number,
             tokenBuyOrders:[/* {userID:String, tokenAmount:Number, transactionId:String} */],
-            remainingTime:Number,
+            remainingTime:String,
         },
     },
     
@@ -32,7 +33,7 @@ const itemFundingSchema = mongoose.Schema({
         postalCode:String,
         description:String,/*  TXT AREA IF POSS */
 
-        type:String,
+        typeOfItem:String,
         livingArea:Number,
         rooms:String,
         bedrooms:String,
@@ -54,5 +55,5 @@ const itemFundingSchema = mongoose.Schema({
     },
 })
 
-const ItemFundingModel = mongoose.model("users", itemFundingSchema);
-module.exports = UserModel;
+const ItemFundingModel = mongoose.model("funding-items", itemFundingSchema);
+module.exports = ItemFundingModel;

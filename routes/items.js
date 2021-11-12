@@ -1,8 +1,9 @@
 var express = require("express");
-const ItemController = require("../controlers/UserController.js");
+const ItemFundingController = require("../controlers/ItemFundingController.js");
 var router = express.Router();
 const UserModel = require("../models/userModel.js");
 const Auth = require("../middlewares/authentification.js");
+const ItemFundingModel = require("../models/itemFundingModel.js");
 let path = require("path");
 
 const multer = require("multer");
@@ -45,6 +46,22 @@ function checkFileType(file, cb) {
   }
 }
 
-router.post("/create-funding", Auth.isUser, ItemController.createFunding)
+/* GET ROUTES  */
+router.get("/show-funding", function (req, res, next) {
+  ItemFundingModel.find({}).then((response) => {
+    res.send(response);
+  });
+}); 
+
+router.get("/", function (req, res, next) {
+  UserModel.find({}).then((response) => {
+    res.send(response);
+  });
+});
+
+/* PUT ROUTES  */
+
+/* POST ROUTES  */
+router.post("/create-funding", Auth.isUser, ItemFundingController.createFunding)
 
 module.exports = router;
