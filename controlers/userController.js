@@ -309,16 +309,6 @@ stockDocument(req, res, next){
     let operationValueInNumber = parseInt(operationValue)
     let userCoinBalanceBeforeOperationInNumber = parseInt(req.user.stableCoin);
     let userCoinBalanceAfterOperation = userCoinBalanceBeforeOperationInNumber + operationValueInNumber;
-
-    /* LOGS FOR DEBUG & EDUCATIONAL PURPOSES // WILL BE REMOVED */
-    console.log("first",userCoinBalanceAfterOperation, typeof(userCoinBalanceAfterOperation),
-    "second", operationValue,
-    "userCoinInNumber",userCoinBalanceAfterOperation,
-    "third", req.user.stableCoin,
-    "req.user._id", req.user._id,
-    "opcalueinNumber",operationValueInNumber,typeof(operationValueInNumber),
-    "type", typeof(operationValue));
-    
     
     if (!operationValue || userCoinBalanceAfterOperation < 0) {
       return res.status(400).send({

@@ -1,23 +1,37 @@
 const mongoose = require("mongoose");
 
 const itemSchema = mongoose.Schema({
-   
+    
+    itemFundingStatus :{
+      itemUpForReviewByAdmin:Boolean,
+      itemDateOfSubmitByUser:String,
+      itemIsAcceptedForFunding:Boolean,
+      itemIsRejectedForFunding:Boolean,
+      
+    },
+
+    itemProposalByUser : {
     itemInfos: {
         name: String, 
         adress:String,
         city:String,
-        description:String,
+        postalCode:String,
+        description:String,/*  TXT AREA IF POSS */
 
         type:String,
-        livingArea:String,
+        livingArea:Number,
         rooms:String,
         bedrooms:String,
 
-
+        terrace:Boolean,
         terraceSurface:Number,
+        garage:Boolean,
         garage:Number,
+        parking:Boolean,
         parking:Number,
         swimmingPool:Boolean,
+        
+        otherSpecialPerks:String,
     },
     itemUserInfos:{
         userId:String, 
@@ -30,30 +44,38 @@ const itemSchema = mongoose.Schema({
     itemPicturesFromUser: [],
 
     itemDocumentsFromUser:[],
-
-    itemFundingStatus :{
-      itemUpForReviewByAdmin:Boolean,
-      itemDateOfSubmitByUser:String,
-      itemIsAcceptedForFunding:Boolean,
-      itemIsRejectedForFunding:Boolean,
-      iteam
     },
 
     
-    itemFundingAdminOnly:{
-        initialData:{
-            priceInEuros:Number,
-            initialTokenAmount:Number,
-            initialTokenValueInEuros:Number,
-            
-            remainingAvailableToken:Number,
-
-            fundingStartDate:String, 
-            fundingEndDeadlineDate:String,
-            fundingGoalReachedDate:String, 
+    itemIsGoForFunding:{
+        itemDescription:{
+            itemPicturesSelectedByAdmin:[String],
+            itemDescriptionByAdmin:[String],
         },
-        itemPicturesSelectedByAdmin:[string,],
+        
+        funding:{
+            initialData:{
+                priceInEuros:Number,
+                initialTokenAmount:Number,
+                initialTokenValueInEuros:Number,
+                
+                fundingStartDate:String, 
+                fundingEndDeadlineDate:String,
+                fundingGoalReachedDate:String, 
+            },
+            fundingProgessData:{
+                remainingAvailableToken:Number,
+                tokenBuyOrders:[/* {userID:String, tokenAmount:Number, transactionId:String} */],
+                remainingTime:Number,
+            },
+        },
+    },
+
+    itemHasBeenSuccessfullyFunded:{
+        tokenOwnerList:[],
+        
     }
+
 })
 
 const ItemModel = mongoose.model("users", itemSchema);
