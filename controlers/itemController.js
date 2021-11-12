@@ -83,7 +83,7 @@ const ItemFundingController = {
         });
       });
   },
-};
+
 
 /* 
 PRIVATE ROUTES  */
@@ -111,21 +111,107 @@ createFunding(req, res, next) {
 
     askedPriceByUser,
     initialTokenAmount,
+    fundingStartDate,
+    fundingEndDeadlineDate/*  RAJOUTER EN FRONT */
 
   } = req.body;
-  if (  !)
+  if (
+    !name ||
+    !adress ||
+    !city ||
+    !postalCode ||
+    !description ||
+    !type /* ||
+    !livingArea ||
+    !rooms ||
+    !bedrooms ||
+    !terrace ||
+    !terraceSurface ||
+    !garage ||
+    !garageNumber ||
+    !parking ||
+    !parkingNumber ||
+    !swimmingPool ||
+    !otherSpecialPerks ||
+    !itemPicturesFromUser ||
+    !askedPriceByUser ||
+    !initialTokenAmount  */
+    ){
+    return res.status(400).send({
+      success:false,
+      message:"Les champs obligatoires ne sont pas tous remplis"
+    });
+  }
+    return ItemFundingModel.create({
+        itemFundingStatus :false,
+        isUpForReviewByAdmin:true,
+        isPublished:false,
+        isCurrentlyBeingFunded:false,
+        hasReachedFundingGoal:false,
+
+        initialData:{
+            priceInEuros:askedPriceByUser,
+            initialTokenAmount:1000,
+            initialSingleTokenValueInEuros: parseInt(askedPriceByUser/initialTokenAmount),
+            
+            fundingStartDate:"12/01/2021", 
+            fundingEndDeadlineDate:24,
+            fundingGoalReachedDate:String, 
+        },
+        fundingProgessData:{
+            remainingAvailableToken:Number,
+            tokenBuyOrders:[/* {userID:String, tokenAmount:Number, transactionId:String} */],
+            remainingTime:Number,
+        },
+
+    itemInfos: {
+        name: String, 
+        adress:String,
+        city:String,
+        postalCode:String,
+        description:String,/*  TXT AREA IF POSS */
+
+        type:String,
+        livingArea:Number,
+        rooms:String,
+        bedrooms:String,
+
+        terrace:Boolean,
+        terraceSurface:Number,
+        garage:Boolean,
+        garageNumber:Number,
+        parking:Boolean,
+        parkingNumber:Number,
+        swimmingPool:Boolean,
+
+        otherSpecialPerks:String,
+
+        itemPicturesFromUser: [],
+        itemPicturesSelectedByAdmin:[],
+
+        itemProposalId:String,
+    }
+
+  })
+  .then(() => {
+    res
+      .status(200)
+      .send({
+        success: true,
+        message: "Votre proposition à bien été soumise à l'équipe d'UpDownStreet"
+      });
+  })
+  .catch((err)=>{
+    res
+      .status(400)
+      .send({
+        success: false,
+        message: "Erreur lors de la soumission de votre proposition."
+      })
+  })
+
 }
-
-
-
-
-
-
-
-
-
-
-
+};
 
 
 module.exports = ItemFundingController;
