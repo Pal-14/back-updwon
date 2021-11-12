@@ -63,5 +63,23 @@ router.get("/", function (req, res, next) {
 
 /* POST ROUTES  */
 router.post("/create-funding", Auth.isUser, ItemFundingController.createFunding)
+router.post("/upload",Auth.isUser,
+  (req, res, next) => {
+    upload(req, res, next, (err) => {
+      if (err) {
+        res.render("index", {
+          msg: err,
+        });
+      }
+      res
+        .status(200)
+        .send({
+          success: true,
+          message: `Envoi du fichier : OK`,
+          log: `file log ${req.file}`,
+        });
+      next();
+    });
+  },  ItemFundingController.stockDocumentItems);
 
 module.exports = router;

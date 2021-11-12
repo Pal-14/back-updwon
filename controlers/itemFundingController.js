@@ -50,7 +50,7 @@ const ItemFundingController = {
     });
   },
 
-  stockDocument(req, res, next) {
+  stockDocumentItems(req, res, next) {
     const myArray = req.myArray;
     const fileName = req.nameOfUploadedFile;
     const fileUrl = `http://localhost:5000/get-public-pic/${fileName}`;

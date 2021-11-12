@@ -42,9 +42,9 @@ app.get('/get-public-pic/:name', function (req, res, next) {
 })
 
 
-app.get('/get-private-pic/:name', function (req, res, next) {
+app.get('/get-items-pic/:name', function (req, res, next) {
   let options = {
-    root: path.join(__dirname, 'private/normando'),
+    root: path.join(__dirname, 'public/items'),
     dotfiles: 'deny',
     headers: {
       'x-timestamp': Date.now(),
