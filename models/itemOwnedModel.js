@@ -1,16 +1,18 @@
 const mongoose = require("mongoose");
 
-const itemSchema = mongoose.Schema({
+const itemOwnedSchema = mongoose.Schema({
     
-    itemFundingStatus :{
-      itemUpForReviewByAdmin:Boolean,
-      itemDateOfSubmitByUser:String,
-      itemIsAcceptedForFunding:Boolean,
-      itemIsRejectedForFunding:Boolean,
+    itemOwnedStatus :{
+      itemIsPublished:Boolean, /* STARTS WITH FALSE THEN ADMIN CAN SET TO TRUE  */
+      tokenOwnerList:[],
       
     },
 
-    itemProposalByUser : {
+    itemCurrentYearPerformance :{
+        expenses:Number,
+        income:Number
+    },
+
     itemInfos: {
         name: String, 
         adress:String,
@@ -30,53 +32,15 @@ const itemSchema = mongoose.Schema({
         parking:Boolean,
         parking:Number,
         swimmingPool:Boolean,
-        
         otherSpecialPerks:String,
+
+        itemPicturesFromUser: [],/*  PICTURES THAT WERE ORIGINALLY UPLOADED BY USER WHO MADE THE PROPOSAL */
+        itemPicturesSelectedByAdmin:[],
+
+        itemProposalId:String,
+        itemFundingId:String
     },
-    itemUserInfos:{
-        userId:String, 
-        userFirstName:String, 
-        userLastName:String, 
-        userEmail: String, 
-        userVerifiedStatus:Boolean,
-    },
-
-    itemPicturesFromUser: [],
-
-    itemDocumentsFromUser:[],
-    },
-
-    
-    itemIsGoForFunding:{
-        itemDescription:{
-            itemPicturesSelectedByAdmin:[String],
-            itemDescriptionByAdmin:[String],
-        },
-        
-        funding:{
-            initialData:{
-                priceInEuros:Number,
-                initialTokenAmount:Number,
-                initialTokenValueInEuros:Number,
-                
-                fundingStartDate:String, 
-                fundingEndDeadlineDate:String,
-                fundingGoalReachedDate:String, 
-            },
-            fundingProgessData:{
-                remainingAvailableToken:Number,
-                tokenBuyOrders:[/* {userID:String, tokenAmount:Number, transactionId:String} */],
-                remainingTime:Number,
-            },
-        },
-    },
-
-    itemHasBeenSuccessfullyFunded:{
-        tokenOwnerList:[],
-        
-    }
-
 })
 
-const ItemModel = mongoose.model("users", itemSchema);
+const ItemOwnedModel = mongoose.model("users", itemOwnedSchema);
 module.exports = UserModel;

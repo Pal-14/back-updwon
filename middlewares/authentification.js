@@ -31,12 +31,13 @@ const Auth = {
             .status(400)
             .send({ succes: false, message: "Erreur sur le Token" });
         let _id = decodedToken._id;
-        UserModel.findOne({ _id: _id }).then((dbResponse) => {
-          if (dbResponse === null)
+        UserModel.findOne({ _id: _id }).then((dbResponseWithUserDataInside) => {
+          if (dbResponseWithUserDataInside === null)
             return res
               .status(404)
               .send({ succes: false, message: "Pas d'utilisateur associé" });
-          req.user = dbResponse;
+          req.user = dbResponseWithUserDataInside;
+          req.superVivi = "Mais ouais mais ouais, super V.";
           req._id = decodedToken._id;
           next();
         });

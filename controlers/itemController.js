@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
+const ItemFundingModel = require('../models/itemFundingModel')
 const bcrypt = require("bcrypt");
 const SALTS = 10;
 const path = require("path");
@@ -11,7 +12,7 @@ function handleServerError(err, res) {
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const ItemController = {
+const ItemFundingController = {
   /* BONUS MIDDLEWARES IF NEED TO LOG BODY OR WANT TO TRY ADMIN SYSTEM */
   logBody(req, res, next) {
     console.log(req.body);
@@ -33,9 +34,6 @@ const ItemController = {
   },
 
   /* ************* PUBLIC ROUTES **************** */
-
-  /*   ROUTE TRY UPLOADS
-   */
 
   uploadDocument(res, req, next) {
     upload(req, res, (err) => {
@@ -87,4 +85,47 @@ const ItemController = {
   },
 };
 
-module.exports = ItemController;
+/* 
+PRIVATE ROUTES  */
+
+createFunding(req, res, next) {
+  let {
+    name,
+    adress, 
+    city, 
+    postalCode, 
+    description,
+    type, 
+    livingArea, 
+    rooms, 
+    bedrooms, 
+    terrace, 
+    terraceSurface, 
+    garage, 
+    garageNumber,
+    parking, 
+    parkingNumber,
+    swimmingPool, 
+    otherSpecialPerks,
+    itemPicturesFromUser,
+
+    askedPriceByUser,
+    initialTokenAmount,
+
+  } = req.body;
+  if (  !)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = ItemFundingController;
