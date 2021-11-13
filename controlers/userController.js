@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const ItemFundingModel = require("../models/itemFundingModel");
 const SALTS = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -12,8 +11,7 @@ function handleServerError(err, res) {
 
 /* ************************************************************************** */
 /* ********* ********** *** USER CONTROLLERS SUMMARY *** ********** ********* */
-/* ************************************************************************** */
-/*
+/* ************************************************************************** */ /*
 
 I.PUBLIC CONTROLLERS 
   A. SIGNUP 
@@ -50,10 +48,13 @@ II.PRIVATE USER CONTROLLERS
 III.PRIVATE ADMIN CONTROLLERS
   A. EDIT USER BY ADMIN ANY VALUE 
       // editUserByAdminAnyValue //
-      // TODO : Add "keyOfPropertyToChange" and/or "targetUserId" controls so he cant remove adminStatus from other Admins
+      // TODO : Add "keyOfPropertyToChange" and/or "targetUserId" controls so he cant remove adminStatus from other Admins. Also cant change user _id
       // Debate : Should we create a superAdmin category ? So he can remove and grant admin rights. 
 
-  B. PRIVATE CONTROLLER TEST
+  B. GET USER LIST 
+
+
+  C. PRIVATE CONTROLLER TEST
     // testPrivateController //
     // Debate : Should we move it to another generalControllers file ?
   
@@ -68,11 +69,10 @@ III.PRIVATE ADMIN CONTROLLERS
 /* ********* ********** PART I : PUBLIC USER CONTROLLERS ********** ********* */
 /* ************************************************************************** */
 
-/* I // ********* PUBLIC CONTROLLERS ********* */
+/* I // ********* PUBLIC CONTROLLERS ********** */
 /* A // SIGNUP ******************************** */
 
 const UserController = {
-
   signup(req, res, next) {
     let {
       firstName,
@@ -142,7 +142,8 @@ const UserController = {
                   res.status(200).send({
                     token: token,
                     success: true,
-                    message: "Félicitation ! Vous êtes désormais inscrit chez UpDownStreet ",
+                    message:
+                      "Félicitation ! Vous êtes désormais inscrit chez UpDownStreet ",
                   });
                 }
               );
@@ -193,8 +194,7 @@ const UserController = {
           JWT_SECRET,
           { expiresIn: "24h" },
           (err, token) => {
-            if (err)
-               console.log(err);
+            if (err) console.log(err);
             res.status(200).send({
               token: token,
               success: true,
@@ -205,8 +205,6 @@ const UserController = {
       })
       .catch((err) => handleServerError(err, res));
   },
-
-
 
   /* ************************************************************************** */
   /* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
@@ -264,8 +262,6 @@ const UserController = {
       });
   },
 
-
-
   /* II // ******* PRIVATE USER CONTROLLERS **** */
   /* B // EDIT USER COIN *********************** */
 
@@ -300,8 +296,6 @@ const UserController = {
         });
       });
   },
-
-
 
   /* II // ******* PRIVATE USER CONTROLLERS **** */
   /* C // EDIT USER BY USER ANY VALUE ********** */
@@ -338,8 +332,6 @@ const UserController = {
       });
   },
 
-
-
   /* II // ******* PRIVATE USER CONTROLLERS **** */
   /* D // STOCK USER DOCUMENT ****************** */
 
@@ -349,7 +341,10 @@ const UserController = {
     if (!myArray) {
       return res
         .status(400)
-        .send({ success: false, message: "Champs néccessaires non renseignés" });
+        .send({
+          success: false,
+          message: "Champs néccessaires non renseignés",
+        });
     }
     return UserModel.updateOne(
       { _id: req._id },
@@ -374,8 +369,6 @@ const UserController = {
       });
   },
 
-
-
   /* II // ******* PRIVATE USER CONTROLLERS **** */
   /* E // GET INFOS **************************** */
 
@@ -384,8 +377,6 @@ const UserController = {
       .status(200)
       .send({ success: true, message: "Info utilisateur", data: req.user });
   },
-
-  
 
   /* ************************************************************************** */
   /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
@@ -427,17 +418,27 @@ const UserController = {
       });
   },
 
+  /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
+  /* B // GET USER LIST ************************ */
 
+  getCompleteUserList(req, res, next) {
+    return UserModel.find({}).then((response) => {
+      res.send(response);
+    });
+  },
 
   /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
-  /* B // TEST PRIVATE CONTROLLER ************** */
+  /* C // TEST PRIVATE CONTROLLER ************** */
 
   testPrivateController(req, res, next) {
-    console.log(`Private Controller Here : Current users name is : ${req.user.firstName} ${req.user.lastName}`);
+    console.log(
+      `Private Controller Here : Current users name is : ${req.user.firstName} ${req.user.lastName}`
+    );
     return res.send({
-        success: true,
-        message: `Private controller HERE. Current user is ${req.user.firstName} ${req.user.lastName}.
-        His/Her Admin Status is ${req.user.infos.isAdmin}` });
+      success: true,
+      message: `Private controller HERE. Current user is ${req.user.firstName} ${req.user.lastName}.
+        His/Her Admin Status is ${req.user.infos.isAdmin}`,
+    });
   },
 
   logBody(req, res, next) {

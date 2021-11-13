@@ -1,103 +1,75 @@
-var express = require("express");
+const express = require("express");
+const router = express.Router();
 const UserController = require("../controlers/UserController.js");
-var router = express.Router();
-const UserModel = require("../models/userModel.js");
 const Auth = require("../middlewares/authentification.js");
-let path = require("path");
+const UploadMiddleware = require("../middlewares/upload.js");
+const UserModel = require("../models/userModel.js");
 
-const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: "./public/uploads",
-  filename: function (req, file, cb) {
-    let myFileName =
-      file.fieldname +
-      "$" +
-      req.user._id +
-      "$" +
-      Date.now() +
-      path.extname(file.originalname);
-    if (!req.myArray) {
-      req.myArray = [myFileName];
-    } else {
-      req.myArray.push(myFileName);
-    }
-    cb(null, myFileName);
-  },
-});
+/* ********************************************************************************** */
+/* ********* ********** ***** *** USERS ROUTER SUMMARY *** ***** ********** ********* */
+/* ********************************************************************************** */
 
-const upload = multer({
-  storage: storage,
-  limit: { fileSize: 100000 },
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-}).any("file:");
+/* I // ********* PUBLIC ROUTES ***************************************************** */
+/* ********************************************************************************** */
 
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png|pdf/;
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (mimetype) {
-    return cb(null, true);
-  } else {
-    cb(null, false);
-  }
-}
-
-/* GET USERS LISTING // DEV ROUTE SO FRONT END TEAM CAN RECEIVE DATA AND TRY STUFF // WILL BE REMOVED */
+/* A // GET ******** */
 router.get("/", function (req, res, next) {
   UserModel.find({}).then((response) => {
     res.send(response);
   });
 });
 
-/* PUBLIC ROUTES  */
+/* B // POST ******** */
 router.post("/login", UserController.login);
 router.post("/signup", UserController.signup);
 
-/* PRIVATE ROUTES  */
+
+
+/* II // ******** PRIVATE USER ROUTES *********************************************** */
+/* ********************************************************************************** */
+
+/* A // GET ******** */
 router.get("/virgitest", Auth.isUser, UserController.testPrivateController);
 router.get("/check-token", Auth.isUser, UserController.getInfos);
+
+/* B // POST ******** */
+router.post(
+  "/edit-user-try",
+  Auth.isUser,
+  UserController.editUserByUserAnyValue
+);
+router.post(
+  "/upload",
+  Auth.isUser,
+  UploadMiddleware.uploadUserDocument,
+  UserController.stockUserDocument
+);
+
+/* C // PUT ******** */
+router.put("/edit-user", Auth.isUser, UserController.editUser);
+router.put("/edit-user-coin", Auth.isUser, UserController.editUserCoin);
+
+
+
+/* III // ******* PRIVATE ADMIN ROUTES ********************************************** */
+/* ********************************************************************************** */
+
+/* A // GET ******** */
 router.get(
   "/admin-listing",
   Auth.isUser,
   Auth.isAdmin,
-  UserController.testPrivateController,
-  function (req, res, next) {
-    UserModel.find({}).then((response) => {
-      res.send(response);
-    });
-  }
+  UserController.getCompleteUserList
 );
 
-router.put("/edit-user", Auth.isUser, UserController.editUser);
-router.put("/edit-user-coin", Auth.isUser, UserController.editUserCoin);
-router.put("/edit-user-status",Auth.isUser,Auth.isAdmin,UserController.editUserByAdminAnyValue);
+/* B // POST ******** */
 
-/* ROUTE TRIES */
-
-router.post("/edit-user-try", Auth.isUser, UserController.editUserByUserAnyValue);
-router.post(
-  "/upload",
+/* C // PUT ******** */
+router.put(
+  "/edit-user-status",
   Auth.isUser,
-  (req, res, next) => {
-    upload(req, res, next, (err) => {
-      if (err) {
-        res.render("index", {
-          msg: err,
-        });
-      }
-      res
-        .status(200)
-        .send({
-          success: true,
-          message: `Envoi du fichier : OK`,
-          log: `file log ${req.file}`,
-        });
-      next();
-    });
-  },
-  UserController.stockUserDocument
+  Auth.isAdmin,
+  UserController.editUserByAdminAnyValue
 );
 
-module.exports = router;
+module.exports = UserRouter;
