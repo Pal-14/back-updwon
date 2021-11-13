@@ -7,11 +7,10 @@ const ItemFundingModel = require("../models/itemFundingModel.js");
 let path = require("path");
 
 const multer = require("multer");
-let myFileName = "";
 const storage = multer.diskStorage({
   destination: "./public/uploads",
   filename: function (req, file, cb) {
-    myFileName =
+  let myFileName =
       file.fieldname +
       "$" +
       req.user._id +
@@ -23,10 +22,10 @@ const storage = multer.diskStorage({
     } else {
       req.myArray.push(myFileName);
     }
-    /* req.myArray = myArray, */
-    (req.nameOfUploadedFile = myFileName), cb(null, myFileName);
+    cb(null, myFileName);
   },
 });
+
 const upload = multer({
   storage: storage,
   limit: { fileSize: 100000 },

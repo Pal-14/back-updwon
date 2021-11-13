@@ -52,19 +52,18 @@ const ItemFundingController = {
 
   stockDocumentItems(req, res, next) {
     const myArray = req.myArray;
-    const fileName = req.nameOfUploadedFile;
-    const fileUrl = `http://localhost:5000/get-public-pic/${fileName}`;
+    let {targetItemFundingId} = req.body;
     console.log(myArray);
-    if (!fileName || !fileUrl) {
+    if (!myArray) {
       return res
         .status(400)
         .send({ success: false, message: "Champs néccessaires non indiqués" });
     }
-    return UserModel.updateOne(
-      { _id: req._id },
+    return ItemFundingModel.updateOne(
+      { _id: targetItemFundingId },
       {
         $push: {
-          "documents.documentsUrl": myArray,
+          "itemInfos.itemPicturesFromUser": myArray,
         },
       }
     )
@@ -199,12 +198,13 @@ createFunding(req, res, next) {
     }
 
   })
-  .then(() => {
+  .then((newFundingItem) => {
     res
       .status(200)
       .send({
         success: true,
-        message: "Votre proposition à bien été soumise à l'équipe d'UpDownStreet"
+        message: `Votre proposition, Monsieur ou Madame ${req.user.lastName} à bien été soumise à l'équipe d'UpDownStreet. Elle porte l'ID ${newFundingItem._id}`,
+        itemFundingId:`${newFundingItem._id}`
       });
   })
   .catch((err)=>{

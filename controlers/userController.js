@@ -2,9 +2,7 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const SALTS = 10;
-const path = require('path')
-
-
+const path = require("path");
 
 function handleServerError(err, res) {
   console.log(err);
@@ -29,7 +27,6 @@ const UserController = {
     next();
   },
 
-  
   /* MIDDLEWARE TO CHECK IF USER CAN ACCESS PRIVATE ROUTES */
 
   getInfos(req, res, next) {
@@ -39,20 +36,17 @@ const UserController = {
   },
 
   testPrivateController(req, res, next) {
-    
-    console.log(`USER FIRST NAME IS : ${req.user.firstName}`)
-    console.log(`NEW FILE NAME IS :${req.nameOfUploadedFile} `)
-    return res
-    .send({success:true, message:"allgood with controller"});
-    
+    console.log(`USER FIRST NAME IS : ${req.user.firstName}`);
+    console.log(`NEW FILE NAME IS :${req.nameOfUploadedFile} `);
+    return res.send({ success: true, message: "allgood with controller" });
   },
 
   /* ************* PUBLIC ROUTES **************** */
 
-/*   ROUTE TRY UPLOADS 
- */
+  /*   ROUTE TRY UPLOADS
+   */
 
-uploadDocument(res, req, next)  {
+  /* uploadDocument(res, req, next)  {
   upload(req, res, (err) => {
     if (err){
         res.sendStatus(400)
@@ -63,44 +57,40 @@ uploadDocument(res, req, next)  {
           log:`file log ${req.file}`});
     }
   })  
-},
+}, */
 
-stockDocument(req, res, next){
-  const myArray = req.myArray
-  const fileName = req.nameOfUploadedFile
-  const fileUrl = `http://localhost:5000/get-public-pic/${fileName}`
-  console.log(myArray)
-  if (!fileName || !fileUrl) {
-    return res
-      .status(400)
-      .send({ success: false, message: "Champs néccessaires non indiqués" });
-  }
-  return UserModel.updateOne(
-    {_id:req._id},
-    {$push:{
-      "documents.documentsUrl":myArray
-    }}
-  )
-    .then(()=>{
-      res
-        .status(200)
-        .send({
-          success:true,
-          message:"Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h."
-        });
-    })
-    .catch(()=>{
-      res
+  stockDocument(req, res, next) {
+    const myArray = req.myArray;
+    console.log(myArray);
+    if (!myArray) {
+      return res
         .status(400)
-        .send({
+        .send({ success: false, message: "Champs néccessaires non indiqués" });
+    }
+    return UserModel.updateOne(
+      { _id: req._id },
+      {
+        $push: {
+          "documents.documentsUrl": myArray,
+        },
+      }
+    )
+      .then(() => {
+        res.status(200).send({
+          success: true,
+          message:
+            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+        });
+      })
+      .catch(() => {
+        res.status(400).send({
           success: false,
-          message:"Erreur",
-          debug:`${req.user._id}`,
+          message: "Erreur",
+          debug: `${req.user._id}`,
         });
       });
-},
+  },
 
-  
   /* LOGIN */
 
   login(req, res, next) {
@@ -151,8 +141,17 @@ stockDocument(req, res, next){
   /* SIGNUP PUBLIC ROUTE */
 
   signup(req, res, next) {
-    let { firstName, lastName, email, password, confirmPassword, country, userName, isAdmin} = req.body;
-    
+    let {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      country,
+      userName,
+      isAdmin,
+    } = req.body;
+
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       return res.status(400).send({
         success: false,
@@ -173,30 +172,30 @@ stockDocument(req, res, next){
           return UserModel.create({
             firstName: firstName,
             lastName: lastName,
-            userName: !userName ? "":userName,
+            userName: !userName ? "" : userName,
             email: email,
             password: hashedPassword,
             stableCoin: 0,
-            infos:{
+            infos: {
               isAdmin: !isAdmin ? "false" : isAdmin,
               hasProvidedAllDocuments: false,
               isVerifiedByAdmin: false,
-              phoneNumber:"",
-              dateOfBirth:"",
+              phoneNumber: "",
+              dateOfBirth: "",
 
-              adress:"",
-              city:"",
-              postalCode:"",
-              country:!country?"":country,
+              adress: "",
+              city: "",
+              postalCode: "",
+              country: !country ? "" : country,
             },
             documents: {
-              status:{
-              hasProvidedDocumentsForReview:false,
-              hasProvidedValidIdCard:false,
-              hasProvidedValidBankDetails:false,
-              hasProvidedValidProofOfAdress:false
+              status: {
+                hasProvidedDocumentsForReview: false,
+                hasProvidedValidIdCard: false,
+                hasProvidedValidBankDetails: false,
+                hasProvidedValidProofOfAdress: false,
               },
-              documentsUrl:[],
+              documentsUrl: [],
             },
           })
             .then((newUser) => {
@@ -227,21 +226,30 @@ stockDocument(req, res, next){
 
   /* EDIT USER INFOS  */
   editUser(req, res, next) {
-    let { userName, phoneNumber, dateOfBirth, adress, city,  postalCode,  country } = req.body;
-    if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth ) {
+    let {
+      userName,
+      phoneNumber,
+      dateOfBirth,
+      adress,
+      city,
+      postalCode,
+      country,
+    } = req.body;
+    if (!phoneNumber || !adress || !city || !postalCode || !dateOfBirth) {
       return res.status(400).send({
         success: false,
-        message: "Les champs obligatoires ne sont pas tous remplis."
+        message: "Les champs obligatoires ne sont pas tous remplis.",
       });
     }
     UserModel.updateOne(
-      { _id: req._id }, 
-      { userName:userName,
+      { _id: req._id },
+      {
+        userName: userName,
         infos: {
-          isVerifiedByAdmin:req.user.infos.isVerifiedByAdmin,
+          isVerifiedByAdmin: req.user.infos.isVerifiedByAdmin,
           hasProvidedAllDocuments: req.user.infos.hasProvidedAllDocuments,
-          isAdmin:req.user.infos.isAdmin,
-          isVerified:req.user.infos.isVerified,
+          isAdmin: req.user.infos.isAdmin,
+          isVerified: req.user.infos.isVerified,
           /* NEED TO FIND A WAY TO EDIT SPECIFIC VALUES WITHIN AN OBJECT */
           phoneNumber: phoneNumber,
           dateOfBirth: dateOfBirth,
@@ -251,17 +259,14 @@ stockDocument(req, res, next){
           postalCode: postalCode,
           country: country,
         },
-        ownedItems: [{ itemId:"", tokenQuantity:0, purchaseDate:"" }],
+        ownedItems: [{ itemId: "", tokenQuantity: 0, purchaseDate: "" }],
       }
     )
       .then(() => {
-        res
-          .status(200)
-          .send({
-            success: true,
-            message:
-              "Vos modifications ont bien été effectuées.",
-          });
+        res.status(200).send({
+          success: true,
+          message: "Vos modifications ont bien été effectuées.",
+        });
       })
       .catch((err) => {
         res
@@ -273,25 +278,25 @@ stockDocument(req, res, next){
   editUserTry(req, res, next) {
     let { editValue, keyToEdit } = req.body;
 
-    if (!editValue ) {
+    if (!editValue) {
       return res.status(400).send({
         success: false,
-        message: "Les champs obligatoires ne sont pas tous remplis."
+        message: "Les champs obligatoires ne sont pas tous remplis.",
       });
     }
     UserModel.updateOne(
-      { _id: req._id }, 
-      { $set: {
-        [keyToEdit]:"WOOOOO",}}
+      { _id: req._id },
+      {
+        $set: {
+          [keyToEdit]: "WOOOOO",
+        },
+      }
     )
       .then(() => {
-        res
-          .status(200)
-          .send({
-            success: true,
-            message:
-              "Vos modifications ont bien été effectuées.",
-          });
+        res.status(200).send({
+          success: true,
+          message: "Vos modifications ont bien été effectuées.",
+        });
       })
       .catch((err) => {
         res
@@ -300,105 +305,77 @@ stockDocument(req, res, next){
       });
   },
 
-
-
-
-
   editUserCoin(req, res, next) {
-    let {operationValue} = req.body;
-    let operationValueInNumber = parseInt(operationValue)
+    let { operationValue } = req.body;
+    let operationValueInNumber = parseInt(operationValue);
     let userCoinBalanceBeforeOperationInNumber = parseInt(req.user.stableCoin);
-    let userCoinBalanceAfterOperation = userCoinBalanceBeforeOperationInNumber + operationValueInNumber;
-    
+    let userCoinBalanceAfterOperation =
+      userCoinBalanceBeforeOperationInNumber + operationValueInNumber;
+
     if (!operationValue || userCoinBalanceAfterOperation < 0) {
       return res.status(400).send({
         success: false,
         message: `Les champs obligatoires ne sont pas tous remplis.  Ou l'opération n'est pas authorisée. Le solde de l'utilisateur reste de ${req.user.stableCoin}`,
       });
-      
     }
     return UserModel.updateOne(
       { _id: req.user._id },
       { stableCoin: userCoinBalanceAfterOperation }
     )
       .then(() => {
-        res
-          .status(200)
-          .send({
-            success: true,
-            message: `ok new user Balance is ${userCoinBalanceAfterOperation}`,
-          });
+        res.status(200).send({
+          success: true,
+          message: `ok new user Balance is ${userCoinBalanceAfterOperation}`,
+        });
       })
       .catch(() => {
-        res
-          .status(400)
-          .send({
-            success: false,
-            message: "Erreur modification",
-            debug: `${req.user._id}`,
-          });
+        res.status(400).send({
+          success: false,
+          message: "Erreur modification",
+          debug: `${req.user._id}`,
+        });
       });
   },
 
-  
-
-  editUserAdminStatus(req, res, next){
-    let { targetUserId, keyOfPropertyToChange, targetValue} = req.body;
-    if (!targetUserId || !keyOfPropertyToChange || !targetValue){
+  editUserAdminStatus(req, res, next) {
+    let { targetUserId, keyOfPropertyToChange, targetValue } = req.body;
+    if (!targetUserId || !keyOfPropertyToChange || !targetValue) {
       return res.status(400).send({
-        success:false,
+        success: false,
         message: "Nope nope nope nope. No user Info",
-        logOfInputValue: `Log it bb. ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`
-      })
+        logOfInputValue: `Log it bb. ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+      });
     }
     return UserModel.updateOne(
-      {_id: targetUserId},
+      { _id: targetUserId },
 
-      { $set: {
-        [keyOfPropertyToChange]:targetValue}
+      {
+        $set: {
+          [keyOfPropertyToChange]: targetValue,
+        },
       }
     )
-      .then(()=>{
-        res
-          .status(200)
-          .send({
-            success: true,
-            message:`User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${targetValue}`
-          })
+      .then(() => {
+        res.status(200).send({
+          success: true,
+          message: `User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${targetValue}`,
+        });
       })
-      .catch((err) =>{
-        res
-          .status(400)
-          .send({
-            success:false,
-            message:`Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${targetValue
-            }. ${targetUserId} Err Log : ${err}`
-
-          })
-      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: `Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+        });
+      });
   },
-
-  
-
-  
 
   filesProof(req, res, next) {
     console.log("je suis ici");
-    console.log("files",req.files);
-    console.log("body",req.body);
-   /*  infos:{
+    console.log("files", req.files);
+    console.log("body", req.body);
+    /*  infos:{
       isVerified: "a verifier", */
-  }
+  },
 };
 
 module.exports = UserController;
-
-
-
-
-
-
-
-
-
-
