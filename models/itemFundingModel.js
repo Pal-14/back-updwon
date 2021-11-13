@@ -50,8 +50,6 @@ const itemFundingSchema = mongoose.Schema({
 
         itemPicturesFromUser: [],
         itemPicturesSelectedByAdmin:[],
-
-        itemProposalId:String,
     },
 })
 
