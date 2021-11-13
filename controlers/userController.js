@@ -10,20 +10,68 @@ function handleServerError(err, res) {
   return res.sendStatus(500);
 }
 
-/* ******* USER CONTROLLERS SUMMARY ******* */
-/* I.PUBLIC CONTROLLERS 
+/* ************************************************************************** */
+/* ********* ********** *** USER CONTROLLERS SUMMARY *** ********** ********* */
+/* ************************************************************************** */
+/*
+
+I.PUBLIC CONTROLLERS 
   A. SIGNUP 
+    // signup //
+    //
+    // Debate : Should we add a gender info ? So we can talk to the user saying Mr or Mrs ? 
+    
   B. LOGIN 
+    // login // 
 
 II.PRIVATE USER CONTROLLERS
-  A. EDIT USER // Allows the user to send additional personnal informations to request Verified status.
-  B. EDIT USER COINS // Allows the user to send a buy order for stable coins OR to request his coins to be wired back to his account 
+  A. EDIT USER : User can send additional personnal informations to request Verified status.
+     // editUser // 
+     // TODO :
+     // Debate : Maybe rename controller into something more explicit. userProvideAdditionnalInfos or smth
 
-III.PRIVATE ADMIN CONTROLLERS */
+  B. EDIT USER COINS : User can send a buy order for stable coins OR to request his coins to be wired back to his account 
+    // editUserCoin // 
+    // TODO : Swap updateOne for updateAndFindOne so we can send back the actual updated info from the user. 
+    // Debate : Maybe create two separate routes for buy and sell orders. Or have different responses and actions. 
+
+  C. EDIT USER BY USER ANY VALUE 
+    // editUserByUserAnyValue //
+    // TODO : Add "keyOfPropertyToChange" controls to prevent user from granting himself an admin status or tokens. 
+
+  D. STOCK USER DOCUMENT 
+    // stockUserDocument //
+
+  E. GET INFOS 
+    // getInfos //
+    // Debate : Should we keep this road or can we use the Auth.isUser route instead ? 
+
+
+III.PRIVATE ADMIN CONTROLLERS
+  A. EDIT USER BY ADMIN ANY VALUE 
+      // editUserByAdminAnyValue //
+      // TODO : Add "keyOfPropertyToChange" and/or "targetUserId" controls so he cant remove adminStatus from other Admins
+      // Debate : Should we create a superAdmin category ? So he can remove and grant admin rights. 
+
+  B. PRIVATE CONTROLLER TEST
+    // testPrivateController //
+    // Debate : Should we move it to another generalControllers file ?
+  
+
+      
+
+
+
+
+
+/* ************************************************************************** */
+/* ********* ********** PART I : PUBLIC USER CONTROLLERS ********** ********* */
+/* ************************************************************************** */
+
+/* I // ********* PUBLIC CONTROLLERS ********* */
+/* A // SIGNUP ******************************** */
 
 const UserController = {
-  /* I // ********* PUBLIC CONTROLLERS ********* */
-  /* A // SIGNUP ******************************** */
 
   signup(req, res, next) {
     let {
@@ -94,7 +142,7 @@ const UserController = {
                   res.status(200).send({
                     token: token,
                     success: true,
-                    message: "Signup successfull my friends",
+                    message: "Félicitation ! Vous êtes désormais inscrit chez UpDownStreet ",
                   });
                 }
               );
@@ -145,7 +193,8 @@ const UserController = {
           JWT_SECRET,
           { expiresIn: "24h" },
           (err, token) => {
-            if (err) console.log(err);
+            if (err)
+               console.log(err);
             res.status(200).send({
               token: token,
               success: true,
@@ -158,7 +207,12 @@ const UserController = {
   },
 
 
-  /* I // ******* PRIVATE USER CONTROLLERS ***** */
+
+  /* ************************************************************************** */
+  /* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
+  /* ************************************************************************** */
+
+  /* II // ******* PRIVATE USER CONTROLLERS **** */
   /* A // EDIT USER **************************** */
 
   editUser(req, res, next) {
@@ -177,7 +231,7 @@ const UserController = {
         message: "Les champs obligatoires ne sont pas tous remplis.",
       });
     }
-    UserModel.updateOne(
+    return UserModel.updateOne(
       { _id: req._id },
       {
         userName: userName,
@@ -212,83 +266,8 @@ const UserController = {
 
 
 
-  logBody(req, res, next) {
-    console.log(req.body);
-    next();
-  },
-
-  getInfos(req, res, next) {
-    return res
-      .status(200)
-      .send({ success: true, message: "Info utilisateur", data: req.user });
-  },
-
-  stockDocument(req, res, next) {
-    const myArray = req.myArray;
-    console.log(myArray);
-    if (!myArray) {
-      return res
-        .status(400)
-        .send({ success: false, message: "Champs néccessaires non indiqués" });
-    }
-    return UserModel.updateOne(
-      { _id: req._id },
-      {
-        $push: {
-          "documents.documentsUrl": myArray,
-        },
-      }
-    )
-      .then(() => {
-        res.status(200).send({
-          success: true,
-          message:
-            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
-        });
-      })
-      .catch(() => {
-        res.status(400).send({
-          success: false,
-          message: "Erreur",
-          debug: `${req.user._id}`,
-        });
-      });
-  },
-
-  
-
-  /* EDIT USER INFOS  */
-  
-
-  editUserTry(req, res, next) {
-    let { editValue, keyToEdit } = req.body;
-
-    if (!editValue) {
-      return res.status(400).send({
-        success: false,
-        message: "Les champs obligatoires ne sont pas tous remplis.",
-      });
-    }
-    UserModel.updateOne(
-      { _id: req._id },
-      {
-        $set: {
-          [keyToEdit]: "WOOOOO",
-        },
-      }
-    )
-      .then(() => {
-        res.status(200).send({
-          success: true,
-          message: "Vos modifications ont bien été effectuées.",
-        });
-      })
-      .catch((err) => {
-        res
-          .status(400)
-          .send({ success: false, message: "Erreur modification" });
-      });
-  },
+  /* II // ******* PRIVATE USER CONTROLLERS **** */
+  /* B // EDIT USER COIN *********************** */
 
   editUserCoin(req, res, next) {
     let { operationValue } = req.body;
@@ -322,12 +301,106 @@ const UserController = {
       });
   },
 
-  editUserAdminStatus(req, res, next) {
-    let { targetUserId, keyOfPropertyToChange, targetValue } = req.body;
-    if (!targetUserId || !keyOfPropertyToChange || !targetValue) {
+
+
+  /* II // ******* PRIVATE USER CONTROLLERS **** */
+  /* C // EDIT USER BY USER ANY VALUE ********** */
+
+  editUserByUserAnyValue(req, res, next) {
+    let { keyOfPropertyToChange, targetValue } = req.body;
+    if (!keyOfPropertyToChange || targetValue === undefined) {
       return res.status(400).send({
         success: false,
-        message: "Nope nope nope nope. No user Info",
+        message:
+          "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
+        logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+      });
+    }
+    return UserModel.updateOne(
+      { _id: req.user._id },
+      {
+        $set: {
+          [keyOfPropertyToChange]: targetValue,
+        },
+      }
+    )
+      .then(() => {
+        res.status(200).send({
+          success: true,
+          message: `User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${targetValue}`,
+        });
+      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: `Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+        });
+      });
+  },
+
+
+
+  /* II // ******* PRIVATE USER CONTROLLERS **** */
+  /* D // STOCK USER DOCUMENT ****************** */
+
+  stockUserDocument(req, res, next) {
+    const myArray = req.myArray;
+    console.log(myArray);
+    if (!myArray) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Champs néccessaires non renseignés" });
+    }
+    return UserModel.updateOne(
+      { _id: req._id },
+      {
+        $push: {
+          "documents.documentsUrl": myArray,
+        },
+      }
+    )
+      .then(() => {
+        res.status(200).send({
+          success: true,
+          message:
+            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+        });
+      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: `Erreur : ${err}`,
+        });
+      });
+  },
+
+
+
+  /* II // ******* PRIVATE USER CONTROLLERS **** */
+  /* E // GET INFOS **************************** */
+
+  getInfos(req, res, next) {
+    return res
+      .status(200)
+      .send({ success: true, message: "Info utilisateur", data: req.user });
+  },
+
+  
+
+  /* ************************************************************************** */
+  /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
+  /* ************************************************************************** */
+
+  /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
+  /* A // EDIT USER BY ADMIN ANY VALUE ********* */
+
+  editUserByAdminAnyValue(req, res, next) {
+    let { targetUserId, keyOfPropertyToChange, targetValue } = req.body;
+    if (!targetUserId || !keyOfPropertyToChange || targetValue === undefined) {
+      return res.status(400).send({
+        success: false,
+        message:
+          "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
         logOfInputValue: `Log it bb. ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
       });
     }
@@ -354,17 +427,22 @@ const UserController = {
       });
   },
 
+
+
+  /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
+  /* B // TEST PRIVATE CONTROLLER ************** */
+
   testPrivateController(req, res, next) {
-    console.log(`USER FIRST NAME IS : ${req.user.firstName}`);
-    return res.send({ success: true, message: "allgood with controller" });
+    console.log(`Private Controller Here : Current users name is : ${req.user.firstName} ${req.user.lastName}`);
+    return res.send({
+        success: true,
+        message: `Private controller HERE. Current user is ${req.user.firstName} ${req.user.lastName}.
+        His/Her Admin Status is ${req.user.infos.isAdmin}` });
   },
 
-  filesProof(req, res, next) {
-    console.log("je suis ici");
-    console.log("files", req.files);
-    console.log("body", req.body);
-    /*  infos:{
-      isVerified: "a verifier", */
+  logBody(req, res, next) {
+    console.log(req.body);
+    next();
   },
 };
 

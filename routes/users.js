@@ -72,11 +72,11 @@ router.get(
 
 router.put("/edit-user", Auth.isUser, UserController.editUser);
 router.put("/edit-user-coin", Auth.isUser, UserController.editUserCoin);
-router.put("/edit-user-status",Auth.isUser,Auth.isAdmin,UserController.editUserAdminStatus);
+router.put("/edit-user-status",Auth.isUser,Auth.isAdmin,UserController.editUserByAdminAnyValue);
 
 /* ROUTE TRIES */
 
-router.post("/edit-user-try", Auth.isUser, UserController.editUserTry);
+router.post("/edit-user-try", Auth.isUser, UserController.editUserByUserAnyValue);
 router.post(
   "/upload",
   Auth.isUser,
@@ -97,7 +97,7 @@ router.post(
       next();
     });
   },
-  UserController.stockDocument
+  UserController.stockUserDocument
 );
 
 module.exports = router;
