@@ -38,6 +38,7 @@ router.post(
   Auth.isUser,
   UserController.editUserByUserAnyValue
 );
+
 router.post(
   "/upload",
   Auth.isUser,

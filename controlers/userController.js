@@ -26,11 +26,17 @@ II.PRIVATE USER CONTROLLERS
   A. EDIT USER : User can send additional personnal informations to request Verified status.
      // editUser // 
      // TODO :
-     // Debate : Maybe rename controller into something more explicit. userProvideAdditionnalInfos or smth
+     // Debate : Maybe rename controller into something more explicit. userProvideAdditionnalInfos or smth tbh imho imo nvm
 
   B. EDIT USER COINS : User can send a buy order for stable coins OR to request his coins to be wired back to his account 
     // editUserCoin // 
-    // TODO : Swap updateOne for updateAndFindOne so we can send back the actual updated info from the user. 
+    // TODO : Swap updateOne for updateAndFindOne so we can send back the actual updated info from the user.
+    TODO IF WE HAVE TIME : 
+     Create THREE CONTROLLERS and appropriate routes 
+      ==> BUY COIN WITH CREDITCARD
+      ==> BUY COIN USING BANK TRANSFER
+      ==> CONVERT COIN IN EUROS AND RECEIVE BANK TRANSFER
+
     // Debate : Maybe create two separate routes for buy and sell orders. Or have different responses and actions. 
 
   C. EDIT USER BY USER ANY VALUE 
