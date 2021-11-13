@@ -66,6 +66,14 @@ const uploadToPublicFolder = multer({
   },
 }).any("file:");
 
+const uploadToYourChoiceFolder = multer({
+  storage: publicFolderStorage,
+  limit: { fileSize: 100000 },
+  fileFilter: function (req, file, cb) {
+    checkFileTypeForPicsAndDocs(file, cb);
+  },
+}).any("file:");
+
 
 const UploadMiddleware = {
 

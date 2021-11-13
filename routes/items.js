@@ -6,6 +6,11 @@ const Auth = require("../middlewares/authentification.js");
 const ItemFundingModel = require("../models/itemFundingModel.js");
 let path = require("path");
 
+/* ********************************************************************************** */
+/* ********* ********** ***** *** ITEMS ROUTER SUMMARY *** ***** ********** ********* */
+/* ********************************************************************************** */
+
+
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: "./public/uploads",
