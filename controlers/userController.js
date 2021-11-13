@@ -1,144 +1,29 @@
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const ItemFundingModel = require("../models/itemFundingModel");
 const SALTS = 10;
-const path = require("path");
+const JWT_SECRET = process.env.JWT_SECRET;
 
 function handleServerError(err, res) {
-  console.log(err);
+  console.log("LOG PROVIDED BY HANDLE SERV ERROR FUNCTION :", err);
   return res.sendStatus(500);
 }
 
-const JWT_SECRET = process.env.JWT_SECRET;
+/* ******* USER CONTROLLERS SUMMARY ******* */
+/* I.PUBLIC CONTROLLERS 
+  A. SIGNUP 
+  B. LOGIN 
 
-function readToken(req) {
-  let authorization = req.headers.authorization;
-  if (!authorization) return null;
-  let splitted = authorization.split(" ");
-  let token = splitted[1];
-  if (token) return token;
-  else return null;
-}
+II.PRIVATE USER CONTROLLERS
+  A. EDIT USER // Allows the user to send additional personnal informations to request Verified status.
+  B. EDIT USER COINS // Allows the user to send a buy order for stable coins OR to request his coins to be wired back to his account 
+
+III.PRIVATE ADMIN CONTROLLERS */
 
 const UserController = {
-  /* BONUS MIDDLEWARES IF NEED TO LOG BODY OR WANT TO TRY ADMIN SYSTEM */
-  logBody(req, res, next) {
-    console.log(req.body);
-    next();
-  },
-
-  /* MIDDLEWARE TO CHECK IF USER CAN ACCESS PRIVATE ROUTES */
-
-  getInfos(req, res, next) {
-    return res
-      .status(200)
-      .send({ success: true, message: "Info utilisateur", data: req.user });
-  },
-
-  testPrivateController(req, res, next) {
-    console.log(`USER FIRST NAME IS : ${req.user.firstName}`);
-    console.log(`NEW FILE NAME IS :${req.nameOfUploadedFile} `);
-    return res.send({ success: true, message: "allgood with controller" });
-  },
-
-  /* ************* PUBLIC ROUTES **************** */
-
-  /*   ROUTE TRY UPLOADS
-   */
-
-  /* uploadDocument(res, req, next)  {
-  upload(req, res, (err) => {
-    if (err){
-        res.sendStatus(400)
-    } else {
-      console.log(req.file);
-      res.send({success:true,
-          message:`Envoi du fichier : OK`,
-          log:`file log ${req.file}`});
-    }
-  })  
-}, */
-
-  stockDocument(req, res, next) {
-    const myArray = req.myArray;
-    console.log(myArray);
-    if (!myArray) {
-      return res
-        .status(400)
-        .send({ success: false, message: "Champs néccessaires non indiqués" });
-    }
-    return UserModel.updateOne(
-      { _id: req._id },
-      {
-        $push: {
-          "documents.documentsUrl": myArray,
-        },
-      }
-    )
-      .then(() => {
-        res.status(200).send({
-          success: true,
-          message:
-            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
-        });
-      })
-      .catch(() => {
-        res.status(400).send({
-          success: false,
-          message: "Erreur",
-          debug: `${req.user._id}`,
-        });
-      });
-  },
-
-  /* LOGIN */
-
-  login(req, res, next) {
-    const userInfos = req.body;
-    const email = userInfos.email;
-    const password = userInfos.password;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .send({ success: false, message: "Merci de remplir les champs" });
-    }
-    return UserModel.findOne({ email: email })
-      .then((user) => {
-        if (user === null) {
-          console.log("email incorrect");
-          return res.status(403).send({
-            success: false,
-            message: "Informations de connexion incorrectes",
-          });
-        }
-
-        let passwordsDoMatch = bcrypt.compareSync(password, user.password);
-        if (!passwordsDoMatch) {
-          console.log("incorrect password");
-          return res.status(401).send({
-            success: false,
-            message: "Informations de connexion incorrectes",
-          });
-        }
-        jwt.sign(
-          { _id: user._id },
-          JWT_SECRET,
-          { expiresIn: "24h" },
-          (err, token) => {
-            if (err) console.log(err);
-            res.status(200).send({
-              token: token,
-              success: true,
-              message: "Login successfull my friends",
-            });
-          }
-        );
-      })
-      .catch((err) => handleServerError(err, res));
-  },
-
-  /* SIGNUP PUBLIC ROUTE */
+  /* I // ********* PUBLIC CONTROLLERS ********* */
+  /* A // SIGNUP ******************************** */
 
   signup(req, res, next) {
     let {
@@ -224,7 +109,58 @@ const UserController = {
       .catch((err) => handleServerError(err, res));
   },
 
-  /* EDIT USER INFOS  */
+  /* I // ********* PUBLIC CONTROLLERS ********* */
+  /* B // LOGIN ******************************** */
+
+  login(req, res, next) {
+    const userInfos = req.body;
+    const email = userInfos.email;
+    const password = userInfos.password;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Merci de remplir les champs" });
+    }
+    return UserModel.findOne({ email: email })
+      .then((user) => {
+        if (user === null) {
+          console.log("email incorrect");
+          return res.status(403).send({
+            success: false,
+            message: "Informations de connexion incorrectes",
+          });
+        }
+
+        let passwordsDoMatch = bcrypt.compareSync(password, user.password);
+        if (!passwordsDoMatch) {
+          console.log("incorrect password");
+          return res.status(401).send({
+            success: false,
+            message: "Informations de connexion incorrectes",
+          });
+        }
+        jwt.sign(
+          { _id: user._id },
+          JWT_SECRET,
+          { expiresIn: "24h" },
+          (err, token) => {
+            if (err) console.log(err);
+            res.status(200).send({
+              token: token,
+              success: true,
+              message: "Login successfull my friends",
+            });
+          }
+        );
+      })
+      .catch((err) => handleServerError(err, res));
+  },
+
+
+  /* I // ******* PRIVATE USER CONTROLLERS ***** */
+  /* A // EDIT USER **************************** */
+
   editUser(req, res, next) {
     let {
       userName,
@@ -250,7 +186,6 @@ const UserController = {
           hasProvidedAllDocuments: req.user.infos.hasProvidedAllDocuments,
           isAdmin: req.user.infos.isAdmin,
           isVerified: req.user.infos.isVerified,
-          /* NEED TO FIND A WAY TO EDIT SPECIFIC VALUES WITHIN AN OBJECT */
           phoneNumber: phoneNumber,
           dateOfBirth: dateOfBirth,
 
@@ -274,6 +209,56 @@ const UserController = {
           .send({ success: false, message: "Erreur modification" });
       });
   },
+
+
+
+  logBody(req, res, next) {
+    console.log(req.body);
+    next();
+  },
+
+  getInfos(req, res, next) {
+    return res
+      .status(200)
+      .send({ success: true, message: "Info utilisateur", data: req.user });
+  },
+
+  stockDocument(req, res, next) {
+    const myArray = req.myArray;
+    console.log(myArray);
+    if (!myArray) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Champs néccessaires non indiqués" });
+    }
+    return UserModel.updateOne(
+      { _id: req._id },
+      {
+        $push: {
+          "documents.documentsUrl": myArray,
+        },
+      }
+    )
+      .then(() => {
+        res.status(200).send({
+          success: true,
+          message:
+            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+        });
+      })
+      .catch(() => {
+        res.status(400).send({
+          success: false,
+          message: "Erreur",
+          debug: `${req.user._id}`,
+        });
+      });
+  },
+
+  
+
+  /* EDIT USER INFOS  */
+  
 
   editUserTry(req, res, next) {
     let { editValue, keyToEdit } = req.body;
@@ -367,6 +352,11 @@ const UserController = {
           message: `Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
         });
       });
+  },
+
+  testPrivateController(req, res, next) {
+    console.log(`USER FIRST NAME IS : ${req.user.firstName}`);
+    return res.send({ success: true, message: "allgood with controller" });
   },
 
   filesProof(req, res, next) {
