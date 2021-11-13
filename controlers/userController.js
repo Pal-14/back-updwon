@@ -212,6 +212,9 @@ const UserController = {
       .catch((err) => handleServerError(err, res));
   },
 
+
+  
+
   /* ************************************************************************** */
   /* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
   /* ************************************************************************** */
@@ -383,6 +386,9 @@ const UserController = {
       .status(200)
       .send({ success: true, message: "Info utilisateur", data: req.user });
   },
+
+
+
 
   /* ************************************************************************** */
   /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */

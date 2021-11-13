@@ -118,12 +118,12 @@ createFunding(req, res, next) {
 
   } = req.body;
   if (
-    !name ||
+    !name /* ||
     !adress ||
     !city ||
     !postalCode ||
     !description ||
-    !typeOfItem /* ||
+    !typeOfItem  ||
     !livingArea ||
     !rooms ||
     !bedrooms ||
