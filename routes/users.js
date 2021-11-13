@@ -72,4 +72,4 @@ router.put(
   UserController.editUserByAdminAnyValue
 );
 
-module.exports = UserRouter;
+module.exports = router;
