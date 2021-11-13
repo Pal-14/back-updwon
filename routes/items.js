@@ -16,12 +16,24 @@ let path = require("path");
 /* GET SHOW FUNDING PUBLIC */
 // Route will show all fundingItems with key "isPublic" = true //
 // TODO : Add Filter to add another param "isBeingCurrentlyFunded" && remaining tokens available > 0 //
-
 router.get("/show-funding-public", function (req, res, next) {
   ItemFundingModel.find({isPublic:true}).then((response) => {
     res.send(response);
   });
 }); 
+
+router.get("/show-funding-public-test", function (req, res, next) {
+  ItemFundingModel.find({isPublic:true}, ).then((response) => {
+    res.send(response);
+  });
+}); 
+
+router.get("/show-funding-public-test-two", function (req, res, next) {
+  ItemFundingModel.find({isPublic:true}).select("-itemFundingStatus").then((response) => {
+    res.send(response);
+  });
+}); 
+
 
 
 /* **** *** *** ** ** * PRIVATE USER ROUTES * ** ** *** *** **** */
@@ -62,6 +74,6 @@ router.get("/show-funding", function (req, res, next) {
   });
 }); 
 
-router.post("/create-funding", Auth.isUser, ItemFundingController.createFunding)
+router.post("/create-funding-by-admin", Auth.isUser, Auth.isAdmin, ItemFundingController.createFundingItemByAdmin)
 
 module.exports = router;

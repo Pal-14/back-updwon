@@ -399,7 +399,7 @@ const UserController = {
 
   editUserByAdminAnyValue(req, res, next) {
     let { targetUserId, keyOfPropertyToChange, targetValue } = req.body;
-    if (!targetUserId || !keyOfPropertyToChange || targetValue === undefined) {
+    if (!targetUserId || !keyOfPropertyToChange || targetValue === undefined ) {
       return res.status(400).send({
         success: false,
         message:
@@ -409,7 +409,6 @@ const UserController = {
     }
     return UserModel.updateOne(
       { _id: targetUserId },
-
       {
         $set: {
           [keyOfPropertyToChange]: targetValue,
