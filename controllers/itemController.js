@@ -111,7 +111,7 @@ const ItemController = {
     return ItemModel.create({
           itemPrivateData :{
             status:{
-            isPublic: !isPublic ? false : isPublic,
+            isPublic: false,
             fundingGoalHasBeenReached: false,
             fundingOfItemIsInProgress: false,
             submitedByUser:true,
@@ -389,10 +389,11 @@ const ItemController = {
           message: "Les champs obligatoires ne sont pas tous remplis",
         });
       }
+      console.log(isPublic, typeof(isPublic));
       return ItemModel.create({
         itemPrivateData :{
           status:{
-            isPublic: isPublic === "on" ? true : false,
+            isPublic: isPublic,
             fundingGoalHasBeenReached: false,
             fundingOfItemIsInProgress: false,
             submitedByUser:false,
