@@ -44,10 +44,10 @@ router.put("/edit-item-by-user", Auth.isUser, ItemController.editItemByUserAnyVa
 router.get("/admin-listing", Auth.isUser, Auth.isAdmin, ItemController.getItemListForAdmin); 
 
 /* POST ADMIN CAN CREATE AN ITEM AND SPECIFY ANY VALUE */
-router.post("/create-item-by-admin", Auth.isUser, Auth.isAdmin, ItemController.createItemByAdmin)
+router.post("/create-by-admin", Auth.isUser, Auth.isAdmin, ItemController.createItemByAdmin)
 
 /* PUT ADMIN CAN EDIT AN ITEM AT HIS CONVENIENCE. JUST ONE VALUE AND KEY AT A TIME */
-router.put("/edit-item-by-admin", Auth.isUser, Auth.isAdmin, ItemController.editItemByAdminAnyValue)
+router.put("/edit-by-admin", Auth.isUser, Auth.isAdmin, ItemController.editItemByAdminAnyValue)
 
 module.exports = router;
 
