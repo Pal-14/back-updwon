@@ -111,7 +111,7 @@ const ItemController = {
     return ItemModel.create({
           itemPrivateData :{
             status:{
-            isPublic: !isPublic ? false : isPublic,
+            isPublic: isPublic,
             fundingGoalHasBeenReached: false,
             fundingOfItemIsInProgress: false,
             submitedByUser:true,
