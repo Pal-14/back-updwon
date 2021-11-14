@@ -282,7 +282,6 @@ const ItemController = {
     stockPrivateDocumentOfItem(req, res, next) {
       const myArray = req.myArray;
       let { targetItemFundingId } = req.body;
-      console.log(myArray);
       if (!myArray) {
         return res
         .status(400)

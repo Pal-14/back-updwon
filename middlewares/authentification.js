@@ -25,7 +25,6 @@ const Auth = {
           .status(401)
           .send({ succes: false, message: "Pas de connexion" });
       jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
-        console.log(err, decodedToken);
         if (err)
           return res
             .status(400)
@@ -37,7 +36,6 @@ const Auth = {
               .status(404)
               .send({ succes: false, message: "Pas d'utilisateur associé" });
           req.user = dbResponseWithUserDataInside;
-          req.superVivi = "Mais ouais mais ouais, super V.";
           req._id = decodedToken._id;
           next();
         });

@@ -144,7 +144,6 @@ const UserController = {
                 { expiresIn: "24h" },
                 (err, token) => {
                   if (err) console.log(err);
-                  console.log(token);
                   res.status(200).send({
                     token: token,
                     success: true,
@@ -347,7 +346,6 @@ const UserController = {
 
   stockUserDocument(req, res, next) {
     const myArray = req.myArray;
-    console.log(myArray);
     if (!myArray) {
       return res
         .status(400)
