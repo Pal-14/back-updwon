@@ -24,8 +24,8 @@ I.PUBLIC CONTROLLERS
 
 II.PRIVATE USER CONTROLLERS
   A. EDIT USER : User can send additional personnal informations to request Verified status.
-     // editUser // 
-     // TODO :
+     // requestVerifiedStatus // 
+     // TODO : Implement findOneAndUpdate
      // Debate : Maybe rename controller into something more explicit. userProvideAdditionnalInfos or smth tbh imho imo nvm
 
   B. EDIT USER COINS : User can send a buy order for stable coins OR to request his coins to be wired back to his account 
@@ -243,10 +243,10 @@ const UserController = {
       { $set : {
         userName: userName,
         infos: {
-/*           isVerifiedByAdmin: req.user.infos.isVerifiedByAdmin,
+          isVerifiedByAdmin: req.user.infos.isVerifiedByAdmin,
           hasProvidedAllDocuments: req.user.infos.hasProvidedAllDocuments,
           isAdmin: req.user.infos.isAdmin,
-          isVerified: req.user.infos.isVerified, */
+          isVerified: req.user.infos.isVerified,
           phoneNumber: phoneNumber,
           dateOfBirth: dateOfBirth,
 
