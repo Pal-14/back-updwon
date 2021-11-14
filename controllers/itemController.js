@@ -206,33 +206,33 @@ const ItemController = {
 /* II // ******* PRIVATE USER CONTROLLERS **** */
 /* B // EDIT ITEM BY USER */
   editItemByUserAnyValue(req, res, next) {
-    let { keyOfPropertyToChange, targetValue, targetItemId } = req.body;
-    if (!keyOfPropertyToChange || targetValue === undefined || !targetItemId) {
+    let { keyOfPropertyToChange, newValue, targetItemId } = req.body;
+    if (!keyOfPropertyToChange || newValue === undefined || !targetItemId) {
       return res.status(400).send({
         success: false,
         message:
           "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
-        logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+        logOfInputValue: `Log it . ${targetItemId}, ${keyOfPropertyToChange} ${newValue}`,
       });
     }
     return ItemModel.updateOne(
       { _id: targetItemId},
       {
         $set: {
-          [keyOfPropertyToChange]: targetValue,
+          [keyOfPropertyToChange]: newValue,
         },
       }
     )
       .then(() => {
         res.status(200).send({
           success: true,
-          message: `Les modifications apportées au bien portant l'id : ${targetUserId}. Ont bien été prises en compte. ${keyOfPropertyToChange} is now ${targetValue}`,
+          message: `Les modifications apportées au bien portant l'id : ${targetItemId}. Ont bien été prises en compte. ${keyOfPropertyToChange} is now ${newValue}`,
         });
       })
       .catch((err) => {
         res.status(400).send({
           success: false,
-          message: `Did not go well. Item ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+          message: `Did not go well. Item ${keyOfPropertyToChange} status wasn't changed to ${newValue}. ${targetItemId} Err Log : ${err}`,
         });
       });
   },
@@ -488,36 +488,36 @@ const ItemController = {
 
     
 /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
-/* C // CREATE FUNDING ITEM BY ADMIN ********* */
+/* C // EDIT ITEM BY ADMIN ANY VALUE ********* */
 
     editItemByAdminAnyValue(req, res, next) {
-      let { keyOfPropertyToChange, targetValue, targetItemId } = req.body;
-      if (!keyOfPropertyToChange || targetValue === undefined || !targetItemId) {
+      let { keyOfPropertyToChange, newValue, targetItemId } = req.body;
+      if (!keyOfPropertyToChange || newValue === undefined || !targetItemId) {
         return res.status(400).send({
           success: false,
           message:
             "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
-          logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+          logOfInputValue: `Log it . ${targetItemId}, ${keyOfPropertyToChange} ${newValue}`,
         });
       }
       return ItemModel.updateOne(
         { _id: targetItemId},
         {
           $set: {
-            [keyOfPropertyToChange]: targetValue,
+            [keyOfPropertyToChange]: newValue,
           },
         }
       )
         .then(() => {
           res.status(200).send({
             success: true,
-            message: `Les modifications apportées au bien portant l'id : ${targetUserId}. Ont bien été prises en compte. ${keyOfPropertyToChange} is now ${targetValue}`,
+            message: `Les modifications apportées au bien portant l'id : ${targetItemId}. Ont bien été prises en compte. ${keyOfPropertyToChange} is now ${newValue}`,
           });
         })
         .catch((err) => {
           res.status(400).send({
             success: false,
-            message: `Did not go well. Item ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+            message: `Did not go well. Item ${keyOfPropertyToChange} status wasn't changed to ${newValue}. ${targetItemId} Err Log : ${err}`,
           });
         });
     },
