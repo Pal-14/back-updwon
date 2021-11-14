@@ -10,10 +10,10 @@ function handleServerError(err, res) {
 /* *********************************************************************************** */
 
 /*
-
 I.PUBLIC CONTROLLERS
   A. GET PUBLIC ITEM LIST
   //getPublicItemList
+
 
 II.PRIVATE USER CONTROLLERS
   A. CREATE ITEM BY USER
@@ -42,8 +42,8 @@ III. PRIVATE ADMIN CONTROLLERS
   C. EDIT ITEM BY ADMIN ANY VALUE
   //editItemByAdminAnyValue 
   // TODO : 
-
 */
+
 
 /* ************************************************************************** */
 /* ********* ********** PART I : PUBLIC USER CONTROLLERS ********** ********* */
@@ -259,9 +259,6 @@ const ItemController = {
       });
   },
   
-  
-  
-  
   /* II // ******* PRIVATE USER CONTROLLERS **** */
   /* C // STOCK PUBLIC DOCUMENT OF ITEM  */
   
@@ -332,6 +329,8 @@ const ItemController = {
         });
       });
     },
+
+
     
 /* ************************************************************************** */
 /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
@@ -487,8 +486,8 @@ const ItemController = {
             fundingGoalReachedDate:"", 
           },
           
-          itemPicturesFromUser: [""],
-          itemPicturesSelectedByAdmin:[""],
+          itemPicturesFromUser: [],
+          itemPicturesSelectedByAdmin:[],
         },
       })
       .then((newFundingItem) => {
@@ -506,7 +505,6 @@ const ItemController = {
         });
       });
     },
-    
 
     
 /* III // ******* PRIVATE ADMIN CONTROLLERS ** */

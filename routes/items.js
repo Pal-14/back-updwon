@@ -8,7 +8,6 @@ const UploadMiddleware = require('../middlewares/upload.js');
 /* ********* ********** ***** *** ITEMS ROUTER SUMMARY *** ***** ********** ********* */
 /* ********************************************************************************** */
 
-
 /* ** **** *** *** ** ** * PUBLIC ROUTES * ** ** *** *** **** ** */
 /* ************************************************************* */
 
@@ -24,7 +23,7 @@ router.get("/public-listing", ItemController.getPublicItemList);
 
 /* POST CREATE FUNDING PROPOSAL BY A USER : Allows the users to create a funding proposal which will be examined by UDS team */
 /* TODO : Implement in Front. Currently only admins can post funding items */
-router.post("/create-funding-by-user", Auth.isUser, ItemController.createItemByUser)
+router.post("/create-by-user", Auth.isUser, ItemController.createItemByUser)
 
 /* POST UPLOADS PICTURES FOR A FUNDING ITEM */
 router.post("/upload-public-doc", Auth.isUser, UploadMiddleware.uploadItemPictures, ItemController.stockPublicDocumentOfItem);
