@@ -24,8 +24,8 @@ I.PUBLIC CONTROLLERS
 
 II.PRIVATE USER CONTROLLERS
   A. EDIT USER : User can send additional personnal informations to request Verified status.
-     // editUser // 
-     // TODO :
+     // requestVerifiedStatus // 
+     // TODO : Implement findOneAndUpdate
      // Debate : Maybe rename controller into something more explicit. userProvideAdditionnalInfos or smth tbh imho imo nvm
 
   B. EDIT USER COINS : User can send a buy order for stable coins OR to request his coins to be wired back to his account 
@@ -144,7 +144,6 @@ const UserController = {
                 { expiresIn: "24h" },
                 (err, token) => {
                   if (err) console.log(err);
-                  console.log(token);
                   res.status(200).send({
                     token: token,
                     success: true,
@@ -212,14 +211,17 @@ const UserController = {
       .catch((err) => handleServerError(err, res));
   },
 
+
+  
+
   /* ************************************************************************** */
   /* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
   /* ************************************************************************** */
 
   /* II // ******* PRIVATE USER CONTROLLERS **** */
-  /* A // EDIT USER **************************** */
+  /* A // REQUEST VERIFIED STATUS ************** */
 
-  editUser(req, res, next) {
+  requestVerifiedStatus(req, res, next) {
     let {
       userName,
       phoneNumber,
@@ -237,7 +239,7 @@ const UserController = {
     }
     return UserModel.updateOne(
       { _id: req._id },
-      {
+      { $set : {
         userName: userName,
         infos: {
           isVerifiedByAdmin: req.user.infos.isVerifiedByAdmin,
@@ -254,6 +256,7 @@ const UserController = {
         },
         ownedItems: [{ itemId: "", tokenQuantity: 0, purchaseDate: "" }],
       }
+    }
     )
       .then(() => {
         res.status(200).send({
@@ -307,33 +310,33 @@ const UserController = {
   /* C // EDIT USER BY USER ANY VALUE ********** */
 
   editUserByUserAnyValue(req, res, next) {
-    let { keyOfPropertyToChange, targetValue } = req.body;
-    if (!keyOfPropertyToChange || targetValue === undefined) {
+    let { keyOfPropertyToChange, newValue } = req.body;
+    if (!keyOfPropertyToChange || keyOfPropertyToChange === "infos.isVerifiedByAdmin" || keyOfPropertyToChange === "infos.isAdmin" || newValue === undefined || newValue === "stableCoin") {
       return res.status(400).send({
         success: false,
         message:
           "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
-        logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+        logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${newValue}`,
       });
     }
     return UserModel.updateOne(
       { _id: req.user._id },
       {
         $set: {
-          [keyOfPropertyToChange]: targetValue,
+          [keyOfPropertyToChange]: newValue,
         },
       }
     )
       .then(() => {
         res.status(200).send({
           success: true,
-          message: `User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${targetValue}`,
+          message: `User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${newValue}`,
         });
       })
       .catch((err) => {
         res.status(400).send({
           success: false,
-          message: `Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+          message: `Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${newValue}. ${targetUserId} Err Log : ${err}`,
         });
       });
   },
@@ -343,7 +346,6 @@ const UserController = {
 
   stockUserDocument(req, res, next) {
     const myArray = req.myArray;
-    console.log(myArray);
     if (!myArray) {
       return res
         .status(400)
@@ -384,6 +386,9 @@ const UserController = {
       .send({ success: true, message: "Info utilisateur", data: req.user });
   },
 
+
+
+
   /* ************************************************************************** */
   /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
   /* ************************************************************************** */
@@ -392,34 +397,33 @@ const UserController = {
   /* A // EDIT USER BY ADMIN ANY VALUE ********* */
 
   editUserByAdminAnyValue(req, res, next) {
-    let { targetUserId, keyOfPropertyToChange, targetValue } = req.body;
-    if (!targetUserId || !keyOfPropertyToChange || targetValue === undefined) {
+    let { targetUserId, keyOfPropertyToChange, newValue } = req.body;
+    if (!targetUserId || !keyOfPropertyToChange || newValue === undefined ) {
       return res.status(400).send({
         success: false,
         message:
           "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
-        logOfInputValue: `Log it bb. ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+        logOfInputValue: `Log it bb. ${targetUserId}, ${keyOfPropertyToChange} ${newValue}`,
       });
     }
     return UserModel.updateOne(
       { _id: targetUserId },
-
       {
         $set: {
-          [keyOfPropertyToChange]: targetValue,
+          [keyOfPropertyToChange]: newValue,
         },
       }
     )
       .then(() => {
         res.status(200).send({
           success: true,
-          message: `User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${targetValue}`,
+          message: `User successfully changed. User with _id : ${targetUserId}. ${keyOfPropertyToChange} is now ${newValue}`,
         });
       })
       .catch((err) => {
         res.status(400).send({
           success: false,
-          message: `Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+          message: `Did not go well. User ${keyOfPropertyToChange} status wasn't changed to ${newValue}. ${targetUserId} Err Log : ${err}`,
         });
       });
   },

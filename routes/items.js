@@ -1,89 +1,53 @@
 var express = require("express");
-const ItemFundingController = require("../controlers/ItemFundingController.js");
+const ItemController = require("../controllers/ItemController.js");
 var router = express.Router();
-const UserModel = require("../models/userModel.js");
 const Auth = require("../middlewares/authentification.js");
-const ItemFundingModel = require("../models/itemFundingModel.js");
-let path = require("path");
+const UploadMiddleware = require('../middlewares/upload.js');
 
 /* ********************************************************************************** */
 /* ********* ********** ***** *** ITEMS ROUTER SUMMARY *** ***** ********** ********* */
 /* ********************************************************************************** */
 
 
-const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: "./public/uploads",
-  filename: function (req, file, cb) {
-  let myFileName =
-      file.fieldname +
-      "$" +
-      req.user._id +
-      "$" +
-      Date.now() +
-      path.extname(file.originalname);
-    if (!req.myArray) {
-      req.myArray = [myFileName];
-    } else {
-      req.myArray.push(myFileName);
-    }
-    cb(null, myFileName);
-  },
-});
+/* ** **** *** *** ** ** * PUBLIC ROUTES * ** ** *** *** **** ** */
+/* ************************************************************* */
 
-const upload = multer({
-  storage: storage,
-  limit: { fileSize: 100000 },
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-}).any("file:");
+/* GET SHOW FUNDING PUBLIC */
+// Route will show all fundingItems with key "isPublic" = true //
+// TODO : Add Filter to add another param "isBeingCurrentlyFunded" && remaining tokens available > 0 //
+router.get("/public-listing", ItemController.getPublicItemList); 
 
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png|pdf/;
-  const mimetype = filetypes.test(file.mimetype);
 
-  if (mimetype) {
-    return cb(null, true);
-  } else {
-    cb(null, false);
-  }
-}
 
-/* GET ROUTES  */
-router.get("/show-funding", function (req, res, next) {
-  ItemFundingModel.find({}).then((response) => {
-    res.send(response);
-  });
-}); 
+/* **** *** *** ** ** * PRIVATE USER ROUTES * ** ** *** *** **** */
+/* ************************************************************* */
 
-router.get("/", function (req, res, next) {
-  UserModel.find({}).then((response) => {
-    res.send(response);
-  });
-});
+/* POST CREATE FUNDING PROPOSAL BY A USER : Allows the users to create a funding proposal which will be examined by UDS team */
+/* TODO : Implement in Front. Currently only admins can post funding items */
+router.post("/create-funding-by-user", Auth.isUser, ItemController.createItemByUser)
 
-/* PUT ROUTES  */
+/* POST UPLOADS PICTURES FOR A FUNDING ITEM */
+router.post("/upload-public-doc", Auth.isUser, UploadMiddleware.uploadItemPictures, ItemController.stockPublicDocumentOfItem);
 
-/* POST ROUTES  */
-router.post("/create-funding", Auth.isUser, ItemFundingController.createFunding)
-router.post("/upload",Auth.isUser,
-  (req, res, next) => {
-    upload(req, res, next, (err) => {
-      if (err) {
-        res.render("index", {
-          msg: err,
-        });
-      }
-      res
-        .status(200)
-        .send({
-          success: true,
-          message: `Envoi du fichier : OK`,
-          log: `file log ${req.file}`,
-        });
-      next();
-    });
-  },  ItemFundingController.stockDocumentItems);
+/* POST UPLOAD A LEGAL DOC IN PRIVATE FOLDER AND LOGS IT IN LEGAL DOC OF ITEM */
+router.post("/upload-legal-doc", Auth.isUser, UploadMiddleware.uploadItemLegalDocument, ItemController.stockPrivateDocumentOfItem)  
+
+/* PUT USER CAN EDIT AN ITEM HE HAS CREATED BUT NOT SUBMITED FOR REVIEW FOR EXAMPLE */
+router.put("/edit-item-by-user", Auth.isUser, ItemController.editItemByUserAnyValue)
+
+
+
+/* **** *** *** ** ** * PRIVATE ADMIN ROUTES * ** ** *** *** **** */
+/* ************************************************************** */
+
+/* GET SHOW COMPLETE LIST OF ALL FUNDING ITEMS */
+router.get("/admin-listing", Auth.isUser, Auth.isAdmin, ItemController.getItemListForAdmin); 
+
+/* POST ADMIN CAN CREATE AN ITEM AND SPECIFY ANY VALUE */
+router.post("/create-item-by-admin", Auth.isUser, Auth.isAdmin, ItemController.createItemByAdmin)
+
+/* PUT ADMIN CAN EDIT AN ITEM AT HIS CONVENIENCE. JUST ONE VALUE AND KEY AT A TIME */
+router.put("/edit-item-by-admin", Auth.isUser, Auth.isAdmin, ItemController.editItemByAdminAnyValue)
 
 module.exports = router;
+
