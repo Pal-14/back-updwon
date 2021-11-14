@@ -10,8 +10,11 @@ function handleServerError(err, res) {
 
 /* 
 I.PUBLIC CONTROLLERS
+  A. GET PUBLIC FUNDING ITEM LIST
 
 II.PRIVATE USER CONTROLLERS
+  A. CREATE FUNDING ITEM BY USER
+
 
 III. PRIVATE ADMIN CONTROLLERS
 */
@@ -164,7 +167,11 @@ const ItemFundingController = {
       });
   },
 
-  stockDocumentItems(req, res, next) {
+  
+/* II // ******* PRIVATE USER CONTROLLERS **** */
+/* B // STOCK PUBLIC DOCUMENT OF FUNDING ITEM  */
+
+  stockPublicDocumentOfFundingItem(req, res, next) {
     const myArray = req.myArray;
     let { targetItemFundingId } = req.body;
     console.log(myArray);
@@ -197,12 +204,51 @@ const ItemFundingController = {
       });
   },
 
+/* II // ******* PRIVATE USER CONTROLLERS **** */
+/* C // STOCK PRIVATE DOCUMENT OF FUNDING ITEM */
+
+  stockPublicDocumentOfFundingItem(req, res, next) {
+    const myArray = req.myArray;
+    let { targetItemFundingId } = req.body;
+    console.log(myArray);
+    if (!myArray) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Champs néccessaires non indiqués" });
+    }
+    return ItemFundingModel.updateOne(
+      { _id: targetItemFundingId },
+      {
+        $push: {
+          "itemInfos.itemPicturesFromUser": myArray,
+        },
+      }
+    )
+      .then(() => {
+        res.status(200).send({
+          success: true,
+          message:
+            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+        });
+      })
+      .catch(() => {
+        res.status(400).send({
+          success: false,
+          message: "Erreur",
+          debug: `${req.user._id}`,
+        });
+      });
+  },
+
+
+
+
   /* ************************************************************************** */
   /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
   /* ************************************************************************** */
   
   /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
-  /* A // GET ADMIN COMPLETE FUNDING ITEM BY ADMIN ********* */
+  /* A // GET COMPLETE FUNDING ITEM BY ADMIN *** */
   getCompleteFundingItemListForAdmin(req, res, next) {
     return ItemFundingModel.find({isPublic:true}).then((response) => {
       res.send(response);

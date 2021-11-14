@@ -3,8 +3,10 @@ const ItemFundingController = require("../controlers/ItemFundingController.js");
 var router = express.Router();
 const UserModel = require("../models/userModel.js");
 const Auth = require("../middlewares/authentification.js");
+const UploadMiddleware = require('../middlewares/upload.js');
 const ItemFundingModel = require("../models/itemFundingModel.js");
 let path = require("path");
+const { uploadItemPictures } = require("../middlewares/upload.js");
 
 /* ********************************************************************************** */
 /* ********* ********** ***** *** ITEMS ROUTER SUMMARY *** ***** ********** ********* */
@@ -43,24 +45,10 @@ router.get("/show-funding-public-test", function (req, res, next) {
 router.post("/create-funding-by-user", Auth.isUser, ItemFundingController.createFundingItemByUser)
 
 /* POST UPLOADS PICTURES FOR A FUNDING ITEM */
-router.post("/upload-public-doc",Auth.isUser,
-(req, res, next) => {
-  upload(req, res, next, (err) => {
-    if (err) {
-      res.render("index", {
-        msg: err,
-      });
-    }
-    res
-    .status(200)
-    .send({
-      success: true,
-      message: `Envoi du fichier : OK`,
-      log: `file log ${req.file}`,
-    });
-    next();
-  });
-},  ItemFundingController.stockDocumentItems);
+router.post("/upload-public-doc", Auth.isUser, UploadMiddleware.uploadItemPictures,  ItemFundingController.stockPublicDocumentOfFundingItem);
+router.post("/upload-private-doc")  
+
+
 
 
 /* **** *** *** ** ** * PRIVATE ADMIN ROUTES * ** ** *** *** **** */

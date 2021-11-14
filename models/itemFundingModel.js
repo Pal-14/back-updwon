@@ -3,11 +3,17 @@ const mongoose = require("mongoose");
 const itemFundingSchema = mongoose.Schema({
     isPublic:Boolean,
     
-    itemFundingStatus :{
+    itemPrivateData :{
         isUpForReviewByAdmin:Boolean,
         isPublished:Boolean,
         isCurrentlyBeingFunded:Boolean,
         hasReachedFundingGoal:Boolean,
+
+        submitedByUserWithId:String,
+        submitedByUserFirstAndLastName:String,
+
+        dateOfSubmitByUser:String,
+
 
         initialData:{
             priceInEuros:Number,
@@ -18,15 +24,18 @@ const itemFundingSchema = mongoose.Schema({
             fundingEndDeadlineDate:String,
             fundingGoalReachedDate:String, 
         },
+
         fundingProgressData:{
             remainingAvailableToken:Number,
             tokenBuyOrders:[/* {userID:String, tokenAmount:Number, transactionId:String} */],
             remainingTime:String,
         },
+
+        legalDocuments:[]
     },
     
 
-    itemInfos: {
+    itemPublicData: {
         name: String, 
         adress:String,
         city:String,
