@@ -1,46 +1,50 @@
 const mongoose = require("mongoose");
 
 const itemFundingSchema = mongoose.Schema({
-    isPublic:Boolean,
     
     itemPrivateData :{
-        isUpForReviewByAdmin:Boolean,
-        isPublished:Boolean,
-        isCurrentlyBeingFunded:Boolean,
-        hasReachedFundingGoal:Boolean,
-
+        status:{
+        isPublic:Boolean,
+        fundingGoalHasBeenReached: Boolean,
+        fundingOfItemIsInProgress: Boolean,
+        submitedByUser:Boolean,
+        submitedByAdmin:Boolean, 
+        isUpForReviewByAdmin: Boolean,
+        },
+        
+        informations:{
+        askedPriceByUser:Number,
         submitedByUserWithId:String,
         submitedByUserFirstAndLastName:String,
-
         dateOfSubmitByUser:String,
-
-
-        initialData:{
-            priceInEuros:Number,
-            initialTokenAmount:Number,
-            initialSingleTokenValueInEuros: Number,
-            
-            fundingStartDate:String, 
-            fundingEndDeadlineDate:String,
-            fundingGoalReachedDate:String, 
+        priceSetByUpDownStreet:Number,
+        legalDocuments:[],
         },
 
-        fundingProgressData:{
-            remainingAvailableToken:Number,
-            tokenBuyOrders:[/* {userID:String, tokenAmount:Number, transactionId:String} */],
-            remainingTime:String,
+        tokenData:{
+        tokenBuyOrdersDuringFunding:[],
+        historyOfTokenBuyOrdersDuringFunding:[],
+        activeTokenBuyOrders:[],
+        historyOfActiveTokenBuyOrders:[],
+        activeTokenSellOffers:[],
+        historyOfActiveTokenSellOffers:[],
+        historyOfCompletedTokenTransactions:[],
         },
-
-        legalDocuments:[]
-    },
-    
+        
+        management:{
+        numberOfDecisionsPendingApproval:Number,
+        currentYearBalance:Number,
+        isRented: Boolean,
+        }
+    },    
 
     itemPublicData: {
+        description:{
         name: String, 
         adress:String,
         city:String,
         postalCode:String,
-        description:String,/*  TXT AREA IF POSS */
+        prettyPrint:String,
 
         typeOfItem:String,
         livingArea:Number,
@@ -56,6 +60,24 @@ const itemFundingSchema = mongoose.Schema({
         swimmingPool:Boolean,
 
         otherSpecialPerks:String,
+        isCurrentlyRented:Boolean,
+        expectedYearlyIncome:Number,
+        },
+
+        funding:{
+        initialTokenAmount:Number,
+        initialSingleTokenValueInEuros:Number,
+        remainingAvailableToken:Number,
+
+        priceInEuros:Number,
+        fundingStartDate:String,
+        fundingEndDeadlineDate:String,
+
+        fundingStartDate:String, 
+        fundingEndDeadlineDate:String,
+        remainingTimeBeforeDeadline:String,
+        fundingGoalReachedDate:String, 
+        },
 
         itemPicturesFromUser: [],
         itemPicturesSelectedByAdmin:[],
