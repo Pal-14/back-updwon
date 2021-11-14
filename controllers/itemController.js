@@ -1,4 +1,4 @@
-const ItemFundingModel = require("../models/itemFundingModel");
+const ItemModel = require("../models/ItemModel");
 
 function handleServerError(err, res) {
   console.log(err);
@@ -32,15 +32,17 @@ III. PRIVATE ADMIN CONTROLLERS
 /* I // ********* PUBLIC CONTROLLERS ********** */
 /* A // GET PUBLIC FUNDING ITEM LIST ********** */
 
-const ItemFundingController = {
-  getPublicFundingItemList(req, res, next) {
-    return ItemFundingModel.find({ isPublic: true })
+const ItemController = {
+  getPublicItemList(req, res, next) {
+    return ItemModel.find({ isPublic: true })
       .select("-itemPrivateData")
       .then((response) => {
         res.send(response);
-      });
+      })
+      .catch((err) => handleServerError(err, res));
   },
 
+  
 /* ************************************************************************** */
 /* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
 /* ************************************************************************** */
@@ -48,7 +50,7 @@ const ItemFundingController = {
 /* II // ******* PRIVATE USER CONTROLLERS **** */
 /* A // CREATE FUNDING ITEM BY USER  ********* */
 
-  createFundingItemByUser(req, res, next) {
+  createItemByUser(req, res, next) {
     let {
       name,
       adress,
@@ -106,7 +108,7 @@ const ItemFundingController = {
         message: "Les champs obligatoires ne sont pas tous remplis",
       });
     }
-    return ItemFundingModel.create({
+    return ItemModel.create({
           itemPrivateData :{
             status:{
             isPublic: !isPublic ? false : isPublic,
@@ -185,11 +187,11 @@ const ItemFundingController = {
             itemPicturesSelectedByAdmin:[],
         },
     })
-      .then((newFundingItem) => {
+      .then((newItem) => {
         res.status(200).send({
           success: true,
-          message: `Votre proposition, Monsieur ou Madame ${req.user.lastName} à bien été soumise à l'équipe d'UpDownStreet. Elle porte l'ID ${newFundingItem._id}`,
-          itemFundingId: `${newFundingItem._id}`,
+          message: `Votre proposition, Monsieur ou Madame ${req.user.lastName} à bien été soumise à l'équipe d'UpDownStreet. Elle porte l'ID ${newItem._id}`,
+          itemFundingId: `${newItem._id}`,
         });
       })
       .catch((err) => {
@@ -213,7 +215,7 @@ const ItemFundingController = {
         logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
       });
     }
-    return ItemFundingModel.updateOne(
+    return ItemModel.updateOne(
       { _id: targetItemId},
       {
         $set: {
@@ -241,7 +243,7 @@ const ItemFundingController = {
   /* II // ******* PRIVATE USER CONTROLLERS **** */
   /* C // STOCK PUBLIC DOCUMENT OF FUNDING ITEM  */
   
-  stockPublicDocumentOfFundingItem(req, res, next) {
+  stockPublicDocumentOfItem(req, res, next) {
     const myArray = req.myArray;
     let { targetItemFundingId } = req.body;
     console.log(myArray);
@@ -250,7 +252,7 @@ const ItemFundingController = {
       .status(400)
       .send({ success: false, message: "Champs néccessaires non indiqués" });
     }
-    return ItemFundingModel.updateOne(
+    return ItemModel.updateOne(
       { _id: targetItemFundingId },
       {
         $push: {
@@ -277,7 +279,7 @@ const ItemFundingController = {
     /* II // ******* PRIVATE USER CONTROLLERS **** */
     /* D // STOCK PRIVATE DOCUMENT OF FUNDING ITEM */
     
-    stockPrivateDocumentOfFundingItem(req, res, next) {
+    stockPrivateDocumentOfItem(req, res, next) {
       const myArray = req.myArray;
       let { targetItemFundingId } = req.body;
       console.log(myArray);
@@ -286,7 +288,7 @@ const ItemFundingController = {
         .status(400)
         .send({ success: false, message: "Champs néccessaires non indiqués" });
       }
-      return ItemFundingModel.updateOne(
+      return ItemModel.updateOne(
         { _id: targetItemFundingId },
       {
         $push: {
@@ -317,8 +319,8 @@ const ItemFundingController = {
 /* III // ******* PRIVATE ADMIN CONTROLLERS */
 /* A // GET FUNDING ITEM LIST FOR ADMIN *** */
 
-    getFundingItemListForAdmin(req, res, next) {
-      return ItemFundingModel.find({}).then((response) => {
+    getItemListForAdmin(req, res, next) {
+      return ItemModel.find({}).then((response) => {
       res.send(response);
     });
   },
@@ -326,7 +328,7 @@ const ItemFundingController = {
 /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
 /* B // CREATE FUNDING ITEM BY ADMIN ********* */
   
-  createFundingItemByAdmin(req, res, next) {
+  createItemByAdmin(req, res, next) {
     let {
       name,
       adress,
@@ -388,7 +390,7 @@ const ItemFundingController = {
           message: "Les champs obligatoires ne sont pas tous remplis",
         });
       }
-      return ItemFundingModel.create({
+      return ItemModel.create({
         itemPrivateData :{
           status:{
             isPublic: isPublic === "on" ? true : false,
@@ -498,7 +500,7 @@ const ItemFundingController = {
           logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
         });
       }
-      return ItemFundingModel.updateOne(
+      return ItemModel.updateOne(
         { _id: targetItemId},
         {
           $set: {
@@ -521,5 +523,5 @@ const ItemFundingController = {
     },
   };
 
-  module.exports = ItemFundingController;
+  module.exports = ItemController;
   

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const itemFundingSchema = mongoose.Schema({
-    
+const itemSchema = mongoose.Schema({
+
     itemPrivateData :{
         status:{
         isPublic:Boolean,
@@ -80,5 +80,5 @@ const itemFundingSchema = mongoose.Schema({
     },
 })
 
-const ItemFundingModel = mongoose.model("funding-items", itemFundingSchema);
-module.exports = ItemFundingModel;
+const ItemModel = mongoose.model("funding-items", itemSchema);
+module.exports = ItemModel;
