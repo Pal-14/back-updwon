@@ -77,6 +77,22 @@ const uploadToYourChoiceFolder = multer({
 
 const UploadMiddleware = {
 
+  uploadItemLegalDocument(req, res, next) {
+    uploadToPrivateFolder(req, res, next, (err) => {
+      if (err) {
+        return res.status(400).send({
+          success: false,
+          message: "Erreur sur le middleware UploadMiddleware.uploadUserDocument",
+        });
+      }
+      res.status(200).send({
+        success: true,
+        message: `Upload du Fichier OK`,
+      });
+      next();
+    });
+  },
+
   uploadUserDocument(req, res, next) {
     uploadToPrivateFolder(req, res, next, (err) => {
       if (err) {

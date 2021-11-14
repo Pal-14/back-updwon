@@ -11,12 +11,18 @@ function handleServerError(err, res) {
 /* 
 I.PUBLIC CONTROLLERS
   A. GET PUBLIC FUNDING ITEM LIST
+  //getPublicFundingItemList
+
 
 II.PRIVATE USER CONTROLLERS
   A. CREATE FUNDING ITEM BY USER
+  //createFundingItemByUser
+  //TODO : Put the very long req list and conditions in another file
 
 
 III. PRIVATE ADMIN CONTROLLERS
+  A. GET COMPLETE FUNDING ITEM LIST FOR ADMIN
+  //getFundingItemListForAdmin
 */
 
 /* ************************************************************************** */
@@ -35,12 +41,12 @@ const ItemFundingController = {
       });
   },
 
-  /* ************************************************************************** */
-  /* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
-  /* ************************************************************************** */
+/* ************************************************************************** */
+/* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
+/* ************************************************************************** */
 
-  /* II // ******* PRIVATE USER CONTROLLERS **** */
-  /* A // CREATE FUNDING ITEM BY USER  ********* */
+/* II // ******* PRIVATE USER CONTROLLERS **** */
+/* A // CREATE FUNDING ITEM BY USER  ********* */
 
   createFundingItemByUser(req, res, next) {
     let {
@@ -63,16 +69,13 @@ const ItemFundingController = {
       otherSpecialPerks,
 
       askedPriceByUser,
-      initialTokenAmount,
-      fundingStartDate,
-      fundingEndDeadlineDate /*  RAJOUTER EN FRONT */,
 
-
+      /* NOUVELLES KEYS  */
       messageFromUser,
-      isCurrentlyRented, /* BOOLEAN */
+      isCurrentlyRented,
       expectedYearlyIncome,
 
-      
+
       /* KEYS FOR DEV, WILL BE REMOVED */
       isPublic,
     } = req.body;
@@ -168,17 +171,13 @@ const ItemFundingController = {
             },
 
             funding:{
+            priceInEuros:0,
             initialTokenAmount:0,
             initialSingleTokenValueInEuros:0,
             remainingAvailableToken:0,
 
-            priceInEuros:0,
-            fundingStartDate:"",
-            fundingEndDeadlineDate:"",
-
             fundingStartDate:"", 
             fundingEndDeadlineDate:"",
-            remainingTimeBeforeDeadline:"",
             fundingGoalReachedDate:"", 
             },
 
@@ -200,21 +199,56 @@ const ItemFundingController = {
           log: `LOG ERR : ${err}`,
         });
       });
+    },
+    
+/* II // ******* PRIVATE USER CONTROLLERS **** */
+/* B // EDIT ITEM BY USER */
+  editItemByUserAnyValue(req, res, next) {
+    let { keyOfPropertyToChange, targetValue, targetItemId } = req.body;
+    if (!keyOfPropertyToChange || targetValue === undefined || !targetItemId) {
+      return res.status(400).send({
+        success: false,
+        message:
+          "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
+        logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+      });
+    }
+    return ItemFundingModel.updateOne(
+      { _id: targetItemId},
+      {
+        $set: {
+          [keyOfPropertyToChange]: targetValue,
+        },
+      }
+    )
+      .then(() => {
+        res.status(200).send({
+          success: true,
+          message: `Les modifications apportées au bien portant l'id : ${targetUserId}. Ont bien été prises en compte. ${keyOfPropertyToChange} is now ${targetValue}`,
+        });
+      })
+      .catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: `Did not go well. Item ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+        });
+      });
   },
-
-
-
+  
+  
+  
+  
   /* II // ******* PRIVATE USER CONTROLLERS **** */
-  /* B // STOCK PUBLIC DOCUMENT OF FUNDING ITEM  */
-
+  /* C // STOCK PUBLIC DOCUMENT OF FUNDING ITEM  */
+  
   stockPublicDocumentOfFundingItem(req, res, next) {
     const myArray = req.myArray;
     let { targetItemFundingId } = req.body;
     console.log(myArray);
     if (!myArray) {
       return res
-        .status(400)
-        .send({ success: false, message: "Champs néccessaires non indiqués" });
+      .status(400)
+      .send({ success: false, message: "Champs néccessaires non indiqués" });
     }
     return ItemFundingModel.updateOne(
       { _id: targetItemFundingId },
@@ -223,12 +257,12 @@ const ItemFundingController = {
           "itemPublicData.itemPicturesFromUser": myArray,
         },
       }
-    )
+      )
       .then(() => {
         res.status(200).send({
           success: true,
           message:
-            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+          "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
         });
       })
       .catch(() => {
@@ -238,33 +272,33 @@ const ItemFundingController = {
           debug: `${req.user._id}`,
         });
       });
-  },
-
-  /* II // ******* PRIVATE USER CONTROLLERS **** */
-  /* C // STOCK PRIVATE DOCUMENT OF FUNDING ITEM */
-
-  stockPrivateDocumentOfFundingItem(req, res, next) {
-    const myArray = req.myArray;
-    let { targetItemFundingId } = req.body;
-    console.log(myArray);
-    if (!myArray) {
-      return res
+    },
+    
+    /* II // ******* PRIVATE USER CONTROLLERS **** */
+    /* D // STOCK PRIVATE DOCUMENT OF FUNDING ITEM */
+    
+    stockPrivateDocumentOfFundingItem(req, res, next) {
+      const myArray = req.myArray;
+      let { targetItemFundingId } = req.body;
+      console.log(myArray);
+      if (!myArray) {
+        return res
         .status(400)
         .send({ success: false, message: "Champs néccessaires non indiqués" });
-    }
-    return ItemFundingModel.updateOne(
-      { _id: targetItemFundingId },
+      }
+      return ItemFundingModel.updateOne(
+        { _id: targetItemFundingId },
       {
         $push: {
           "itemPrivateData.informations.legalDocuments": myArray,
         },
       }
-    )
+      )
       .then(() => {
         res.status(200).send({
           success: true,
           message:
-            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+          "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
         });
       })
       .catch(() => {
@@ -274,23 +308,24 @@ const ItemFundingController = {
           debug: `${req.user._id}`,
         });
       });
-  },
+    },
+    
+/* ************************************************************************** */
+/* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
+/* ************************************************************************** */
+    
+/* III // ******* PRIVATE ADMIN CONTROLLERS */
+/* A // GET FUNDING ITEM LIST FOR ADMIN *** */
 
-  /* ************************************************************************** */
-  /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
-  /* ************************************************************************** */
-
-  /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
-  /* A // GET COMPLETE FUNDING ITEM BY ADMIN *** */
-  getCompleteFundingItemListForAdmin(req, res, next) {
-    return ItemFundingModel.find({}).then((response) => {
+    getFundingItemListForAdmin(req, res, next) {
+      return ItemFundingModel.find({}).then((response) => {
       res.send(response);
     });
   },
 
-  /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
-  /* B // CREATE FUNDING ITEM BY ADMIN ********* */
-
+/* III // ******* PRIVATE ADMIN CONTROLLERS ** */
+/* B // CREATE FUNDING ITEM BY ADMIN ********* */
+  
   createFundingItemByAdmin(req, res, next) {
     let {
       name,
@@ -310,97 +345,128 @@ const ItemFundingController = {
       parkingNumber,
       swimmingPool,
       otherSpecialPerks,
-
+      
       askedPriceByUser,
       initialTokenAmount,
       fundingStartDate,
-      fundingEndDeadlineDate,
-
+      fundingEndDeadlineDate /*  RAJOUTER EN FRONT */,
+      
+      /* NOUVELLES KEYS  */
+      isCurrentlyRented,
+      expectedYearlyIncome,
+      priceSetByUpDownStreet,
+      messageFromUser, /* ALSO COUNTS AS A NOTE FROM AN ADMIN */
+      
+      /* NEW KEYS FOR ADMIN ONLY */
       isPublic,
+      
     } = req.body;
     if (
       !name /* ||
-        !adress ||
-        !city ||
-        !postalCode ||
-        !description ||
-        !typeOfItem  ||
-        !livingArea ||
-        !rooms ||
-        !bedrooms ||
-        !terrace ||
-        !terraceSurface ||
-        !garage ||
-        !garageNumber ||
-        !parking ||
-        !parkingNumber ||
-        !swimmingPool ||
-        !otherSpecialPerks ||
-        !itemPicturesFromUser ||
-        !askedPriceByUser ||
-        !initialTokenAmount  */
-    ) {
-      return res.status(400).send({
-        success: false,
-        message: "Les champs obligatoires ne sont pas tous remplis",
-      });
-    }
-    return ItemFundingModel.create({
-      isPublic: !isPublic ? false : isPublic,
-      itemFundingStatus: {
-        isUpForReviewByAdmin: true,
-        isPublished: false,
-        isCurrentlyBeingFunded: false,
-        hasReachedFundingGoal: false,
-
-        initialData: {
-          priceInEuros: askedPriceByUser,
-          initialTokenAmount: initialTokenAmount,
-          initialSingleTokenValueInEuros:
-            parseInt(askedPriceByUser) / parseInt(initialTokenAmount),
-
-          fundingStartDate: !fundingStartDate ? "12/01/2021" : fundingStartDate,
-          fundingEndDeadlineDate: !fundingEndDeadlineDate
-            ? "12/03/2021"
-            : fundingEndDeadlineDate,
-          fundingGoalReachedDate: "",
+      !adress ||
+      !city ||
+      !postalCode ||
+      !description ||
+      !typeOfItem  ||
+      !livingArea ||
+      !rooms ||
+      !bedrooms ||
+      !terrace ||
+      !terraceSurface ||
+      !garage ||
+      !garageNumber ||
+      !parking ||
+      !parkingNumber ||
+      !swimmingPool ||
+      !otherSpecialPerks ||
+      !itemPicturesFromUser ||
+      !askedPriceByUser ||
+      !initialTokenAmount  */
+      ) {
+        return res.status(400).send({
+          success: false,
+          message: "Les champs obligatoires ne sont pas tous remplis",
+        });
+      }
+      return ItemFundingModel.create({
+        itemPrivateData :{
+          status:{
+            isPublic: isPublic === "on" ? true : false,
+            fundingGoalHasBeenReached: false,
+            fundingOfItemIsInProgress: false,
+            submitedByUser:false,
+            submitedByAdmin:true, 
+            isUpForReviewByAdmin: true,
+          },
+          
+          informations:{
+            askedPriceByUser:askedPriceByUser,
+            submitedByUserWithId:req._id,
+            submitedByUserFirstAndLastName:`${req.user.firstName} ${req.user.lastName}`,
+            dateOfSubmitByUser:Date.now(),
+            messageFromUser: !messageFromUser ? "" : messageFromUser,
+            priceSetByUpDownStreet:!priceSetByUpDownStreet ? 0 : priceSetByUpDownStreet,
+            legalDocuments:[],
+          },
+          
+          tokenData:{
+            tokenBuyOrdersDuringFunding:[],
+            historyOfTokenBuyOrdersDuringFunding:[],
+            activeTokenBuyOrders:[],
+            historyOfActiveTokenBuyOrders:[],
+            activeTokenSellOffers:[],
+            historyOfActiveTokenSellOffers:[],
+            historyOfCompletedTokenTransactions:[],
+          },
+          
+          management:{
+            numberOfDecisionsPendingApproval:0,
+            currentYearBalance:0,
+            isCurrentlyRented: !isCurrentlyRented ? false : isCurrentlyRented,
+          }
+        },    
+        
+        itemPublicData: {
+          description:{
+            name: name, 
+            adress:adress,
+            city:city,
+            postalCode:postalCode,
+            prettyPrint:description,
+            
+            typeOfItem:typeOfItem,
+            livingArea:livingArea,
+            rooms:rooms,
+            bedrooms:bedrooms,
+            
+            terrace:terrace,
+            terraceSurface:terraceSurface,
+            garage:garage,
+            garageNumber:garageNumber,
+            parking:parking,
+            parkingNumber:parkingNumber,
+            swimmingPool:swimmingPool,
+            
+            otherSpecialPerks:otherSpecialPerks,
+            isCurrentlyRented: !isCurrentlyRented ? false : isCurrentlyRented,
+            expectedYearlyIncome: !expectedYearlyIncome ? 0 : expectedYearlyIncome,
+          },
+          
+          funding:{
+            priceInEuros: !priceSetByUpDownStreet ? 0 : priceSetByUpDownStreet,
+            initialTokenAmount:!initialTokenAmount ? 0 : initialTokenAmount,
+            initialSingleTokenValueInEuros:!priceSetByUpDownStreet || !initialTokenAmount ? 0 : parseInt(priceInEuros) / parseInt(initialTokenAmount),
+            remainingAvailableToken:!priceSetByUpDownStreet || !initialTokenAmount ? 0 : parseInt(priceInEuros) / parseInt(initialTokenAmount),
+            
+            fundingStartDate:!fundingStartDate ? "" : fundingStartDate, 
+            fundingEndDeadlineDate:!fundingEndDeadlineDate ? "" : fundingEndDeadlineDate,
+            fundingGoalReachedDate:"", 
+          },
+          
+          itemPicturesFromUser: [""],
+          itemPicturesSelectedByAdmin:[""],
         },
-        fundingProgressData: {
-          remainingAvailableToken: 1000,
-          numberOfTokenSold: 0,
-          tokenBuyOrders: [
-            /* {userID:String, tokenAmount:Number, transactionId:String} */
-          ],
-          remainingTime: "",
-        },
-      },
-
-      itemInfos: {
-        name: name,
-        adress: adress,
-        city: city,
-        postalCode: postalCode,
-        description: description,
-
-        typeOfItem: typeOfItem,
-        livingArea: livingArea,
-        rooms: rooms,
-        bedrooms: bedrooms,
-
-        terrace: terrace,
-        terraceSurface: terraceSurface,
-        garage: garage,
-        garageNumber: !garageNumber ? 0 : garageNumber,
-        parking: parking,
-        parkingNumber: !parkingNumber ? 0 : parkingNumber,
-        swimmingPool: swimmingPool,
-
-        otherSpecialPerks: !otherSpecialPerks ? "" : otherSpecialPerks,
-
-        itemPicturesFromUser: [],
-        itemPicturesSelectedByAdmin: [],
-      },
-    })
+      })
       .then((newFundingItem) => {
         res.status(200).send({
           success: true,
@@ -415,7 +481,45 @@ const ItemFundingController = {
           log: `LOG ERR : ${err}`,
         });
       });
-  },
-};
+    },
+    
 
-module.exports = ItemFundingController;
+    
+/* III // ******* PRIVATE ADMIN CONTROLLERS ** */
+/* C // CREATE FUNDING ITEM BY ADMIN ********* */
+
+    editItemByAdminAnyValue(req, res, next) {
+      let { keyOfPropertyToChange, targetValue, targetItemId } = req.body;
+      if (!keyOfPropertyToChange || targetValue === undefined || !targetItemId) {
+        return res.status(400).send({
+          success: false,
+          message:
+            "Les informations néccessaires à la bonne exécution de la requête n'ont pas été reçues.",
+          logOfInputValue: `Log it . ${targetUserId}, ${keyOfPropertyToChange} ${targetValue}`,
+        });
+      }
+      return ItemFundingModel.updateOne(
+        { _id: targetItemId},
+        {
+          $set: {
+            [keyOfPropertyToChange]: targetValue,
+          },
+        }
+      )
+        .then(() => {
+          res.status(200).send({
+            success: true,
+            message: `Les modifications apportées au bien portant l'id : ${targetUserId}. Ont bien été prises en compte. ${keyOfPropertyToChange} is now ${targetValue}`,
+          });
+        })
+        .catch((err) => {
+          res.status(400).send({
+            success: false,
+            message: `Did not go well. Item ${keyOfPropertyToChange} status wasn't changed to ${targetValue}. ${targetUserId} Err Log : ${err}`,
+          });
+        });
+    },
+  };
+
+  module.exports = ItemFundingController;
+  

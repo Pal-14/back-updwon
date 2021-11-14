@@ -65,17 +65,13 @@ const itemFundingSchema = mongoose.Schema({
         },
 
         funding:{
+        priceInEuros:Number,
         initialTokenAmount:Number,
         initialSingleTokenValueInEuros:Number,
         remainingAvailableToken:Number,
 
-        priceInEuros:Number,
-        fundingStartDate:String,
-        fundingEndDeadlineDate:String,
-
         fundingStartDate:String, 
         fundingEndDeadlineDate:String,
-        remainingTimeBeforeDeadline:String,
         fundingGoalReachedDate:String, 
         },
 

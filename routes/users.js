@@ -33,44 +33,67 @@ router.get("/virgitest", Auth.isUser, UserController.testPrivateController);
 router.get("/check-token", Auth.isUser, UserController.getInfos);
 
 /* B // POST ******** */
-router.post(
-  "/edit-user-try",
-  Auth.isUser,
-  UserController.editUserByUserAnyValue
-);
 
 router.post(
   "/upload",
   Auth.isUser,
   UploadMiddleware.uploadUserDocument,
   UserController.stockUserDocument
-);
-
-/* C // PUT ******** */
-router.put("/edit-user", Auth.isUser, UserController.editUser);
-router.put("/edit-user-coin", Auth.isUser, UserController.editUserCoin);
-
-
-
-/* III // ******* PRIVATE ADMIN ROUTES ********************************************** */
-/* ********************************************************************************** */
-
-/* A // GET ******** */
-router.get(
-  "/admin-listing",
+  );
+  
+router.post(
+  "/upload-private-document",
   Auth.isUser,
-  Auth.isAdmin,
-  UserController.getCompleteUserList
-);
+  UploadMiddleware.uploadUserDocument,
+  UserController.stockUserDocument
+  );
+  
+  /* C // PUT ******** */
+  router.put("/edit-user", Auth.isUser, UserController.requestVerifiedStatus); /* WILL BE REMOVED AND REPLACED BY THE ONE BELOW */
+  router.put("/request-verified-status", Auth.isUser, UserController.requestVerifiedStatus)
 
-/* B // POST ******** */
 
-/* C // PUT ******** */
-router.put(
-  "/edit-user-status",
-  Auth.isUser,
-  Auth.isAdmin,
-  UserController.editUserByAdminAnyValue
-);
+  router.put("/edit-user-coin", Auth.isUser, UserController.editUserCoin);
+  router.put("/buy-coin-by-card", Auth.isUser, UserController.editUserCoin);
+  router.put("/buy-coin-by-transfer",);
+  router.put("/convert-coin-to-euro",);
+
+  /* This Route allows a user to edit its own informations. It cant edit his admin status or stablecoin balance */
+  router.put(
+    "/edit-user-by-user",
+    Auth.isUser,
+    UserController.editUserByUserAnyValue
+  );
+  
+  
+  
+  /* III // ******* PRIVATE ADMIN ROUTES ********************************************** */
+  /* ********************************************************************************** */
+  
+  /* A // GET ******** */
+  router.get(
+    "/admin-listing",
+    Auth.isUser,
+    Auth.isAdmin,
+    UserController.getCompleteUserList
+    );
+    
+    /* B // POST ******** */
+    
+    /* C // PUT ******** */
+    router.put(
+      "/edit-user-status",
+      Auth.isUser,
+      Auth.isAdmin,
+      UserController.editUserByAdminAnyValue
+      );
+      
+    router.put(
+      "/edit-user-by-admin",
+      Auth.isUser,
+      Auth.isAdmin,
+      UserController.editUserByAdminAnyValue
+      );
+      
 
 module.exports = router;

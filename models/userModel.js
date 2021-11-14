@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
   password: String,
   stableCoin: Number,
   stableCoinLog:[Object],
+  submitedItems:[],
 
   infos: {
     isVerifiedByAdmin: Boolean,
