@@ -4,25 +4,45 @@ function handleServerError(err, res) {
   console.log(err);
   return res.sendStatus(500);
 }
+
 /* *********************************************************************************** */
 /* ********* ********** ***** * ITEMS CONTROLLERS SUMMARY * ***** ********** ********* */
 /* *********************************************************************************** */
 
-/* 
-I.PUBLIC CONTROLLERS
-  A. GET PUBLIC FUNDING ITEM LIST
-  //getPublicFundingItemList
+/*
 
+I.PUBLIC CONTROLLERS
+  A. GET PUBLIC ITEM LIST
+  //getPublicItemList
 
 II.PRIVATE USER CONTROLLERS
-  A. CREATE FUNDING ITEM BY USER
-  //createFundingItemByUser
-  //TODO : Put the very long req list and conditions in another file
+  A. CREATE ITEM BY USER
+  //createItemByUser
+  //TODO : Put the very long req list and conditions in another file. 
+  Decide which fields are mandatory.
+
+  B. EDIT ITEM BY USER
+  //editItemByUserAnyValue
+  // TODO : Restrict values that can be edited by a user
+
+  C. STOCK PUBLIC DOCUMENT OF ITEM
+  //stockPublicDocumentOfItem
+
+  D. STOCK PRIVATE DOCUMENT OF ITEM 
+  //stockPrivateDocumentOfItem
 
 
 III. PRIVATE ADMIN CONTROLLERS
-  A. GET COMPLETE FUNDING ITEM LIST FOR ADMIN
-  //getFundingItemListForAdmin
+  A. GET ITEM LIST FOR ADMIN
+  //getItemListForAdmin
+
+  B. CREATE ITEM BY ADMIN 
+  //createItemByAdmin
+
+  C. EDIT ITEM BY ADMIN ANY VALUE
+  //editItemByAdminAnyValue 
+  // TODO : 
+
 */
 
 /* ************************************************************************** */
@@ -30,7 +50,7 @@ III. PRIVATE ADMIN CONTROLLERS
 /* ************************************************************************** */
 
 /* I // ********* PUBLIC CONTROLLERS ********** */
-/* A // GET PUBLIC FUNDING ITEM LIST ********** */
+/* A // GET PUBLIC ITEM LIST ********** */
 
 const ItemController = {
   getPublicItemList(req, res, next) {
@@ -42,13 +62,15 @@ const ItemController = {
       .catch((err) => handleServerError(err, res));
   },
 
+
+
   
 /* ************************************************************************** */
 /* ********* ********* PART II : PRIVATE USER CONTROLLERS ********* ********* */
 /* ************************************************************************** */
 
 /* II // ******* PRIVATE USER CONTROLLERS **** */
-/* A // CREATE FUNDING ITEM BY USER  ********* */
+/* A // CREATE ITEM BY USER  ********* */
 
   createItemByUser(req, res, next) {
     let {
@@ -241,7 +263,7 @@ const ItemController = {
   
   
   /* II // ******* PRIVATE USER CONTROLLERS **** */
-  /* C // STOCK PUBLIC DOCUMENT OF FUNDING ITEM  */
+  /* C // STOCK PUBLIC DOCUMENT OF ITEM  */
   
   stockPublicDocumentOfItem(req, res, next) {
     const myArray = req.myArray;
@@ -277,7 +299,7 @@ const ItemController = {
     },
     
     /* II // ******* PRIVATE USER CONTROLLERS **** */
-    /* D // STOCK PRIVATE DOCUMENT OF FUNDING ITEM */
+    /* D // STOCK PRIVATE DOCUMENT OF ITEM */
     
     stockPrivateDocumentOfItem(req, res, next) {
       const myArray = req.myArray;
@@ -316,7 +338,7 @@ const ItemController = {
 /* ************************************************************************** */
     
 /* III // ******* PRIVATE ADMIN CONTROLLERS */
-/* A // GET FUNDING ITEM LIST FOR ADMIN *** */
+/* A // GET ITEM LIST FOR ADMIN *** */
 
     getItemListForAdmin(req, res, next) {
       return ItemModel.find({}).then((response) => {
@@ -325,7 +347,7 @@ const ItemController = {
   },
 
 /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
-/* B // CREATE FUNDING ITEM BY ADMIN ********* */
+/* B // CREATE ITEM BY ADMIN ********* */
   
   createItemByAdmin(req, res, next) {
     let {
