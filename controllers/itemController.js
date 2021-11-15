@@ -467,12 +467,14 @@ const ItemController = {
       
       askedPriceByUser,
       initialTokenAmount,
+      initialSingleTokenValueInEuros,
       fundingStartDate,
       fundingEndDeadlineDate /*  RAJOUTER EN FRONT */,
       
       /* NOUVELLES KEYS  */
       isCurrentlyRented,
       expectedYearlyIncome,
+      priceInEuros,
       priceSetByUpDownStreet,
       messageFromUser, /* ALSO COUNTS AS A NOTE FROM AN ADMIN */
       
