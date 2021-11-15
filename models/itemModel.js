@@ -75,7 +75,6 @@ itemPublicData: {
     
     tokenData:{
         activeTokenBuyOrders:[],
-        
         activeTokenSellOffers:[],
     },
 

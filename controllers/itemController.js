@@ -334,7 +334,71 @@ const ItemController = {
       /* II // ******* PRIVATE USER CONTROLLERS **** */
       /* E // BUY TOKENS OF ITEM CURRENTLY FUNDING */
 
-      buyTokenOfCurrentlyFundingItem(req, res, next ){},
+      buyTokenOfCurrentlyFundingItem(req, res, next ){
+        let { targetItemId, tokenQuantityOrdered, priceInStableCoin } = req.body;
+        if (!targetItemId || !tokenQuantityOrdered || !priceInStableCoin || !req._id){
+          return res
+          .status(400)
+          .send({
+            success: false,
+            message: "Erreur",
+            })
+          }
+          return ItemModel.findOne({_id:targetItemId})
+            .then((targetedItem) => {
+              if (targetedItem === null) {
+                return res
+                        .status(400)
+                        .send({
+                          success:false,
+                          message:"Aucun bien ne correspond à l'ID fourni"
+                        });
+              }
+              let remainingTokenAfterBuy = parseInt(targetedItem.itemPublicData.funding.remainingAvailableToken) - parseInt(tokenQuantityOrdered)
+              console.log("ROM LOG REMAINING TOKEN ", remainingTokenAfterBuy)
+              /* INSERT CONTROLS IF REMAINING IS BELOW ZERO */
+              return ItemModel.updateOne(
+                {_id:targetItemId},
+                {$set : {
+                  ["itemPublicData.funding.remainingAvailableToken"] : remainingTokenAfterBuy,
+                },
+              }
+              )
+              .then(()=> {
+                let logOfTokenPurchase = {
+                  itemId:targetedItem._id,
+                  quantity:tokenQuantityOrdered,
+                  dateOfPurchase: Date.now(),
+                  idOfOwner:req._id,
+                  initialTokenValue:targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros,
+                  
+                }
+                return ItemModel.updateOne(
+                {_id:targetItemId},
+                  {$push : {
+                    ["itemPrivateData.tokenData.tokenBuyOrdersDuringFunding"] : logOfTokenPurchase,
+                        },
+                  }
+                )
+                .then(()=> {
+                  res
+                  .status(200)
+                  .send({
+                    success:true,
+                    message:`La transaction a bien abouti.`
+                  });
+                });
+              })
+            })
+            .catch((err) => {
+              res
+                .status(400)
+                .send({
+                  success:false,
+                  message:`Une erreur s'est produite. La transaction n'a pas pu aboutir.`
+                });
+            });
+      },
 
       
       
