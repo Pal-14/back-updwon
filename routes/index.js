@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get('/get-private-doc/:name', Auth.isAdmin, function (req, res, next) {
+router.get('/get-private-doc/:name', /* Auth.isAdmin, */ function (req, res, next) {
   let options = {
     root: path.join(__dirname, '../private/uploads'),
     dotfiles: 'deny',

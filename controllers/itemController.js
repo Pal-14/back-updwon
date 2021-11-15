@@ -227,6 +227,7 @@ const ItemController = {
     
 /* II // ******* PRIVATE USER CONTROLLERS **** */
 /* B // EDIT ITEM BY USER */
+
   editItemByUserAnyValue(req, res, next) {
     let { keyOfPropertyToChange, newValue, targetItemId } = req.body;
     if (!keyOfPropertyToChange || newValue === undefined || !targetItemId) {
@@ -308,33 +309,38 @@ const ItemController = {
       }
       return ItemModel.updateOne(
         { _id: targetItemFundingId },
-      {
-        $push: {
-          "itemPrivateData.informations.legalDocuments": myArray,
-        },
-      }
-      )
-      .then(() => {
-        res.status(200).send({
-          success: true,
-          message:
-          "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+        {
+          $push: {
+            "itemPrivateData.informations.legalDocuments": myArray,
+          },
+        }
+        )
+        .then(() => {
+          res.status(200).send({
+            success: true,
+            message:
+            "Ok vos documents ont bien été envoyés. L'équipe d'UpDownStreet vérifiera vos documents sous 48h.",
+          });
+        })
+        .catch(() => {
+          res.status(400).send({
+            success: false,
+            message: "Erreur",
+            debug: `${req.user._id}`,
+          });
         });
-      })
-      .catch(() => {
-        res.status(400).send({
-          success: false,
-          message: "Erreur",
-          debug: `${req.user._id}`,
-        });
-      });
-    },
+      },
+      
+      /* II // ******* PRIVATE USER CONTROLLERS **** */
+      /* E // BUY TOKENS OF ITEM CURRENTLY FUNDING */
 
+      buyTokenOfCurrentlyFundingItem(req, res, next ){},
 
-    
-/* ************************************************************************** */
-/* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
-/* ************************************************************************** */
+      
+      
+      /* ************************************************************************** */
+      /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
+      /* ************************************************************************** */
     
 /* III // ******* PRIVATE ADMIN CONTROLLERS */
 /* A // GET ITEM LIST FOR ADMIN *** */

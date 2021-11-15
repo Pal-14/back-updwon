@@ -6,51 +6,48 @@ const itemSchema = mongoose.Schema({
         status:{
         isPublic:Boolean,
         fundingGoalHasBeenReached: Boolean,
-        fundingOfItemIsInProgress: Boolean,
         submitedByUser:Boolean,
         submitedByAdmin:Boolean, 
         isUpForReviewByAdmin: Boolean,
-        },
-        
-        informations:{
+    },
+    
+    informations:{
         askedPriceByUser:Number,
         submitedByUserWithId:String,
         submitedByUserFirstAndLastName:String,
         dateOfSubmitByUser:String,
         priceSetByUpDownStreet:Number,
         legalDocuments:[],
-        },
-
-        tokenData:{
+    },
+    
+    tokenData:{
         tokenBuyOrdersDuringFunding:[],
         historyOfTokenBuyOrdersDuringFunding:[],
-        activeTokenBuyOrders:[],
         historyOfActiveTokenBuyOrders:[],
-        activeTokenSellOffers:[],
         historyOfActiveTokenSellOffers:[],
         historyOfCompletedTokenTransactions:[],
-        },
-        
-        management:{
+    },
+    
+    management:{
         numberOfDecisionsPendingApproval:Number,
         currentYearBalance:Number,
         isRented: Boolean,
-        }
-    },    
+    }
+},    
 
-    itemPublicData: {
-        description:{
+itemPublicData: {
+    description:{
         name: String, 
         adress:String,
         city:String,
         postalCode:String,
         prettyPrint:String,
-
+        
         typeOfItem:String,
         livingArea:Number,
         rooms:String,
         bedrooms:String,
-
+        
         terrace:Boolean,
         terraceSurface:Number,
         garage:Boolean,
@@ -58,25 +55,32 @@ const itemSchema = mongoose.Schema({
         parking:Boolean,
         parkingNumber:Number,
         swimmingPool:Boolean,
-
+        
         otherSpecialPerks:String,
         isCurrentlyRented:Boolean,
         expectedYearlyIncome:Number,
-        },
-
-        funding:{
+    },
+    
+    funding:{
         priceInEuros:Number,
         initialTokenAmount:Number,
         initialSingleTokenValueInEuros:Number,
         remainingAvailableToken:Number,
-
+        
+        fundingOfItemIsInProgress: Boolean,
         fundingStartDate:String, 
         fundingEndDeadlineDate:String,
         fundingGoalReachedDate:String, 
-        },
+    },
+    
+    tokenData:{
+        activeTokenBuyOrders:[],
+        
+        activeTokenSellOffers:[],
+    },
 
-        itemPicturesFromUser: [],
-        itemPicturesSelectedByAdmin:[],
+    itemPicturesFromUser: [],
+    itemPicturesSelectedByAdmin:[],
     },
 })
 
