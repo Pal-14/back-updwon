@@ -5,7 +5,6 @@ const itemSchema = mongoose.Schema({
     itemPrivateData :{
         status:{
         isPublic:Boolean,
-        fundingGoalHasBeenReached: Boolean,
         submitedByUser:Boolean,
         submitedByAdmin:Boolean, 
         isUpForReviewByAdmin: Boolean,
@@ -16,6 +15,7 @@ const itemSchema = mongoose.Schema({
         submitedByUserWithId:String,
         submitedByUserFirstAndLastName:String,
         dateOfSubmitByUser:String,
+        messageFromUser:String,
         priceSetByUpDownStreet:Number,
         legalDocuments:[],
     },
@@ -31,7 +31,6 @@ const itemSchema = mongoose.Schema({
     management:{
         numberOfDecisionsPendingApproval:Number,
         currentYearBalance:Number,
-        isRented: Boolean,
     }
 },    
 
@@ -70,6 +69,7 @@ itemPublicData: {
         fundingOfItemIsInProgress: Boolean,
         fundingStartDate:String, 
         fundingEndDeadlineDate:String,
+        fundingGoalHasBeenReached:Boolean,
         fundingGoalReachedDate:String, 
     },
     

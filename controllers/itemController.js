@@ -1,4 +1,5 @@
 const ItemModel = require("../models/ItemModel");
+const UserModel = require("../models/userModel");
 
 function handleServerError(err, res) {
   console.log(err);
@@ -134,8 +135,6 @@ const ItemController = {
           itemPrivateData :{
             status:{
             isPublic: false,
-            fundingGoalHasBeenReached: false,
-            fundingOfItemIsInProgress: false,
             submitedByUser:true,
             submitedByAdmin:false, 
             isUpForReviewByAdmin: true,
@@ -154,9 +153,7 @@ const ItemController = {
             tokenData:{
             tokenBuyOrdersDuringFunding:[],
             historyOfTokenBuyOrdersDuringFunding:[],
-            activeTokenBuyOrders:[],
             historyOfActiveTokenBuyOrders:[],
-            activeTokenSellOffers:[],
             historyOfActiveTokenSellOffers:[],
             historyOfCompletedTokenTransactions:[],
             },
@@ -164,7 +161,6 @@ const ItemController = {
             management:{
             numberOfDecisionsPendingApproval:0,
             currentYearBalance:0,
-            isCurrentlyRented: !isCurrentlyRented ? false : isCurrentlyRented,
             }
         },    
 
@@ -200,9 +196,15 @@ const ItemController = {
             initialSingleTokenValueInEuros:0,
             remainingAvailableToken:0,
 
+            fundingOfItemIsInProgress:false,
             fundingStartDate:"", 
             fundingEndDeadlineDate:"",
             fundingGoalReachedDate:"", 
+            },
+
+            tokenData:{
+              activeTokenBuyOrders:[],
+              activeTokenSellOffers:[],
             },
 
             itemPicturesFromUser: [],
@@ -369,8 +371,8 @@ const ItemController = {
                   itemId:targetedItem._id,
                   quantity:tokenQuantityOrdered,
                   dateOfPurchase: Date.now(),
-                  idOfOwner:req._id,
                   initialTokenValue:targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros,
+                  idOfOwner:req._id,
                   
                 }
                 return ItemModel.updateOne(
@@ -380,6 +382,31 @@ const ItemController = {
                         },
                   }
                 )
+                .then(()=> {
+                  let logOfTokenPurchaseForUser = {
+                    itemdId:targetedItem._id,
+                    quantity:tokenQuantityOrdered,
+                    dateOfPurchase: Date.now(),
+                    initialTokenValue:targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros,
+                  }
+                  return UserModel.updateOne(
+                    {_id:req._id},
+                    {$push : {
+                      ["stableCoinLog"] : logOfTokenPurchaseForUser,
+                    },
+
+
+                    }
+                  )
+                  .then(()=> {
+                    res
+                      .status(200)
+                      .send({
+                        success:true,
+                        message:"Ok"
+                      })
+                  })
+                })
                 .then(()=> {
                   res
                   .status(200)
@@ -485,11 +512,9 @@ const ItemController = {
         itemPrivateData :{
           status:{
             isPublic: isPublic,
-            fundingGoalHasBeenReached: false,
-            fundingOfItemIsInProgress: false,
             submitedByUser:false,
             submitedByAdmin:true, 
-            isUpForReviewByAdmin: true,
+            isUpForReviewByAdmin: false,
           },
           
           informations:{
@@ -505,9 +530,7 @@ const ItemController = {
           tokenData:{
             tokenBuyOrdersDuringFunding:[],
             historyOfTokenBuyOrdersDuringFunding:[],
-            activeTokenBuyOrders:[],
             historyOfActiveTokenBuyOrders:[],
-            activeTokenSellOffers:[],
             historyOfActiveTokenSellOffers:[],
             historyOfCompletedTokenTransactions:[],
           },
@@ -515,7 +538,6 @@ const ItemController = {
           management:{
             numberOfDecisionsPendingApproval:0,
             currentYearBalance:0,
-            isCurrentlyRented: !isCurrentlyRented ? false : isCurrentlyRented,
           }
         },    
         
@@ -551,8 +573,10 @@ const ItemController = {
             initialSingleTokenValueInEuros:!priceSetByUpDownStreet || !initialTokenAmount ? 0 : parseInt(priceInEuros) / parseInt(initialTokenAmount),
             remainingAvailableToken:!priceSetByUpDownStreet || !initialTokenAmount ? 0 : parseInt(priceInEuros) / parseInt(initialTokenAmount),
             
+            fundingOfItemIsInProgress:false,
             fundingStartDate:!fundingStartDate ? "" : fundingStartDate, 
             fundingEndDeadlineDate:!fundingEndDeadlineDate ? "" : fundingEndDeadlineDate,
+            fundingGoalHasBeenReached:false,
             fundingGoalReachedDate:"", 
           },
           
