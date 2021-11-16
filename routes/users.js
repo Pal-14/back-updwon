@@ -29,7 +29,6 @@ router.post("/signup", UserController.signup);
 /* ********************************************************************************** */
 
 /* A // GET ******** */
-router.get("/virgitest", Auth.isUser, UserController.testPrivateController);
 router.get("/check-token", Auth.isUser, UserController.getInfos);
 
 /* B // POST ******** */
