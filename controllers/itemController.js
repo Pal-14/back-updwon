@@ -353,7 +353,7 @@ const ItemController = {
             let shareOfItem = 100 * (parseInt(tokenQuantityOrdered) / parseInt(targetedItem.itemPublicData.funding.initialTokenAmount))
             let priceOfOrderInStableCoin = parseInt(targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros) * parseInt(tokenQuantityOrdered) 
             let logOfTokenPurchaseForItem = {
-              itemId:targetedItem._id,
+              itemId:targetItemId,
               idOfOwner:req._id,
               userName: `${req.user.firstName} ${req.user.lastName}`,
               globalTokenIdOfItem: `UDS-${targetedItemId._id}-BCF2021-TK`,
