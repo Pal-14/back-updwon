@@ -11,12 +11,12 @@ let path = require('path')
 /* ************************************************************* */
 
 /* GET NON EXISTING HOME PAGE INDEX */
-router.get('/', function(req, res, next) {
+indexRouter.get('/', function(req, res, next) {
   res.render('index', { title: 'UDS-2021' });
 });
 
 /* GET PUBLIC DOCUMENT BY A USER */
-router.get('/get-public-pic/:name', function (req, res, next) {
+indexRouter.get('/get-public-pic/:name', function (req, res, next) {
   let options = {
     root: path.join(__dirname, '../public/uploads'),
     dotfiles: 'deny',
@@ -41,7 +41,7 @@ router.get('/get-public-pic/:name', function (req, res, next) {
 /* ************************************************************** */
 
 /* GET PRIVATE DOCUMENTS BY AN ADMIN */
-router.get('/get-private-doc/:name', /* Auth.isAdmin, */ function (req, res, next) {
+indexRouter.get('/get-private-doc/:name', /* Auth.isAdmin, */ function (req, res, next) {
   let options = {
     root: path.join(__dirname, '../private/uploads'),
     dotfiles: 'deny',

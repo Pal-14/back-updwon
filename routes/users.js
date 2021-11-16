@@ -13,15 +13,15 @@ const UserModel = require("../models/userModel.js");
 /* ********************************************************************************** */
 
 /* A // GET ******** */
-router.get("/", function (req, res, next) {
+userRouter.get("/", function (req, res, next) {
   UserModel.find({}).then((response) => {
     res.send(response);
   });
 });
 
 /* B // POST ******** */
-router.post("/login", UserController.login);
-router.post("/signup", UserController.signup);
+userRouter.post("/login", UserController.login);
+userRouter.post("/signup", UserController.signup);
 
 
 
@@ -29,18 +29,18 @@ router.post("/signup", UserController.signup);
 /* ********************************************************************************** */
 
 /* A // GET ******** */
-router.get("/check-token", Auth.isUser, UserController.getInfos);
+userRouter.get("/check-token", Auth.isUser, UserController.getInfos);
 
 /* B // POST ******** */
 
-router.post(
+userRouter.post(
   "/upload",
   Auth.isUser,
   UploadMiddleware.uploadUserDocument,
   UserController.stockUserDocument
   );
   
-router.post(
+  userRouter.post(
   "/upload-private-document",
   Auth.isUser,
   UploadMiddleware.uploadUserDocument,
@@ -48,17 +48,17 @@ router.post(
   );
   
   /* C // PUT ******** */
-  router.put("/edit-user", Auth.isUser, UserController.requestVerifiedStatus); /* WILL BE REMOVED AND REPLACED BY THE ONE BELOW */
-  router.put("/request-verified-status", Auth.isUser, UserController.requestVerifiedStatus)
+  userRouter.put("/edit-user", Auth.isUser, UserController.requestVerifiedStatus); /* WILL BE REMOVED AND REPLACED BY THE ONE BELOW */
+  userRouter.put("/request-verified-status", Auth.isUser, UserController.requestVerifiedStatus)
 
 
-  router.put("/edit-user-coin", Auth.isUser, UserController.editUserCoin);
-  router.put("/buy-coin-by-card", Auth.isUser, UserController.editUserCoin);
-  router.put("/buy-coin-by-transfer",);
-  router.put("/convert-coin-to-euro",);
+  userRouter.put("/edit-user-coin", Auth.isUser, UserController.editUserCoin);
+  userRouter.put("/buy-coin-by-card", Auth.isUser, UserController.editUserCoin);
+  userRouter.put("/buy-coin-by-transfer",);
+  userRouter.put("/convert-coin-to-euro",);
 
   /* This Route allows a user to edit its own informations. It cant edit his admin status or stablecoin balance */
-  router.put(
+  userRouter.put(
     "/edit-user-by-user",
     Auth.isUser,
     UserController.editUserByUserAnyValue
@@ -70,7 +70,7 @@ router.post(
   /* ********************************************************************************** */
   
   /* A // GET ******** */
-  router.get(
+  userRouter.get(
     "/admin-listing",
     Auth.isUser,
     Auth.isAdmin,
@@ -80,14 +80,14 @@ router.post(
     /* B // POST ******** */
     
     /* C // PUT ******** */
-    router.put(
+    userRouter.put(
       "/edit-user-status",
       Auth.isUser,
       Auth.isAdmin,
       UserController.editUserByAdminAnyValue
       );
       
-    router.put(
+      userRouter.put(
       "/edit-user-by-admin",
       Auth.isUser,
       Auth.isAdmin,
