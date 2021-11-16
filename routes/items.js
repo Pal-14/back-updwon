@@ -1,6 +1,7 @@
 var express = require("express");
 const ItemController = require("../controllers/itemController.js");
-var router = express.Router();
+const router = express.Router();
+let path = require('path')
 const Auth = require("../middlewares/authentification.js");
 const UploadMiddleware = require('../middlewares/upload.js');
 
