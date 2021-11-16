@@ -1,6 +1,6 @@
 var express = require("express");
 const ItemController = require("../controllers/ItemController.js");
-const router = express.Router();
+var router = express.Router();
 const Auth = require("../middlewares/authentification.js");
 const UploadMiddleware = require('../middlewares/upload.js');
 

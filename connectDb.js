@@ -10,6 +10,6 @@ mongoose.connect(DB_URI).then(()=>{
     ╚██████╔╝██║     ██████╔╝╚██████╔╝╚███╔███╔╝██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗   ██║   
     ╚═════╝ ╚═╝     ╚═════╝  ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   
                     YOU ARE NOW CONNECTED TO YOUR FAVORITE UPDOWNSTREET DATABASE 
-              MEMBER YOU ARE USING ${DB_URI} AT THE MOMENT                                                                                                 
+                                                                                                              
     `)
 })
