@@ -342,7 +342,7 @@ const ItemController = {
             });
           }
           let remainingTokenAfterBuy = parseInt(targetedItem.itemPublicData.funding.remainingAvailableToken) - parseInt(tokenQuantityOrdered)
-          return ItemModel.updateOne(
+          return ItemModel.findOneAndUpdate(
             {_id:targetItemId},
             {$set : {
               ["itemPublicData.funding.remainingAvailableToken"] : remainingTokenAfterBuy,
@@ -356,7 +356,7 @@ const ItemController = {
               itemId:targetItemId,
               idOfOwner:req._id,
               userName: `${req.user.firstName} ${req.user.lastName}`,
-              globalTokenIdOfItem: `UDS-${targetedItemId._id}-BCF2021-TK`,
+              globalTokenIdOfItem: `UDS-${targetItemId}-BCF2021-TK`,
               tokenQuantityOrdered:tokenQuantityOrdered,
               priceOfOrderInStableCoin:priceOfOrderInStableCoin,
               globalTokenAmountForThisItem:targetedItem.itemPublicData.funding.initialTokenAmount,
@@ -388,7 +388,7 @@ const ItemController = {
                 itemId:targetedItem._id,
                 idOfOwner:req._id,
                 userName: `${req.user.firstName} ${req.user.lastName}`,
-                globalTokenIdOfItem: `UDS-${targetedItemId._id}-BCF2021-TK`,
+                globalTokenIdOfItem: `UDS-${targetItemId}-BCF2021-TK`,
                 tokenQuantityOrdered:tokenQuantityOrdered,
                 priceOfOrderInStableCoin:priceOfOrderInStableCoin,
                 globalTokenAmountForThisItem:targetedItem.itemPublicData.funding.initialTokenAmount,
