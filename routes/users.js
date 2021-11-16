@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const userRouter = express.Router();
 const UserController = require("../controllers/userController.js");
 const Auth = require("../middlewares/authentification.js");
 const UploadMiddleware = require("../middlewares/upload.js");
@@ -95,4 +95,4 @@ router.post(
       );
       
 
-module.exports = router;
+module.exports = userRouter;

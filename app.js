@@ -7,8 +7,8 @@ require('dotenv').config();
 require('./connectDb')
 
 let indexRouter = require('./routes/index');
-let UserRouter = require('./routes/users');
-let itemsRouter = require('./routes/items');
+let userRouter = require('./routes/users');
+let itemRouter = require('./routes/items');
 
 let app = express();
 
@@ -20,8 +20,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', UserRouter);
-app.use('/items', itemsRouter);
+app.use('/users', userRouter);
+app.use('/items', itemRouter);
 
 
 module.exports = app;

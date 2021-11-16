@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const indexRouter = express.Router();
 let path = require('path')
 
 
@@ -63,4 +63,4 @@ router.get('/get-private-doc/:name', /* Auth.isAdmin, */ function (req, res, nex
 
 
 
-module.exports = router;
+module.exports = indexRouter;

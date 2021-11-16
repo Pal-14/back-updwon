@@ -1,6 +1,6 @@
 var express = require("express");
 const ItemController = require("../controllers/itemController.js");
-const router = express.Router();
+const itemRouter = express.Router();
 let path = require('path')
 const Auth = require("../middlewares/authentification.js");
 const UploadMiddleware = require('../middlewares/upload.js');
@@ -54,5 +54,5 @@ router.post("/create-by-admin", Auth.isUser, Auth.isAdmin, ItemController.create
 /* PUT ADMIN CAN EDIT AN ITEM AT HIS CONVENIENCE. JUST ONE VALUE AND KEY AT A TIME */
 router.put("/edit-by-admin", Auth.isUser, Auth.isAdmin, ItemController.editItemByAdminAnyValue)
 
-module.exports = router;
+module.exports = itemRouter;
 
