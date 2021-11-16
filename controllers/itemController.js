@@ -1,5 +1,5 @@
-const ItemModel = require("../models/ItemModel");
-const UserModel = require("../models/userModel");
+const ItemModel = require("../models/itemModel.js");
+const UserModel = require("../models/userModel.js");
 
 function handleServerError(err, res) {
   console.log(err);
