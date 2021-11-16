@@ -179,7 +179,6 @@ const UserController = {
     return UserModel.findOne({ email: email })
       .then((user) => {
         if (user === null) {
-          console.log("email incorrect");
           return res.status(403).send({
             success: false,
             message: "Informations de connexion incorrectes",
@@ -188,7 +187,6 @@ const UserController = {
 
         let passwordsDoMatch = bcrypt.compareSync(password, user.password);
         if (!passwordsDoMatch) {
-          console.log("incorrect password");
           return res.status(401).send({
             success: false,
             message: "Informations de connexion incorrectes",
@@ -449,11 +447,6 @@ const UserController = {
       message: `Private controller HERE. Current user is ${req.user.firstName} ${req.user.lastName}.
         His/Her Admin Status is ${req.user.infos.isAdmin}`,
     });
-  },
-
-  logBody(req, res, next) {
-    console.log(req.body);
-    next();
   },
 };
 

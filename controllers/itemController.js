@@ -253,7 +253,6 @@ const ItemController = {
   stockPublicDocumentOfItem(req, res, next) {
     const myArray = req.myArray;
     let { targetItemFundingId } = req.body;
-    console.log(myArray);
     if (!myArray) {
       return res
       .status(400)
@@ -343,8 +342,6 @@ const ItemController = {
             });
           }
           let remainingTokenAfterBuy = parseInt(targetedItem.itemPublicData.funding.remainingAvailableToken) - parseInt(tokenQuantityOrdered)
-          console.log("ROM LOG REMAINING TOKEN ", remainingTokenAfterBuy)
-          /* INSERT CONTROLS IF REMAINING IS BELOW ZERO */
           return ItemModel.updateOne(
             {_id:targetItemId},
             {$set : {
@@ -353,10 +350,7 @@ const ItemController = {
           }
           )
           .then(()=> {
-            let tryOUT = targetedItem
-            console.log(tryOUT)
             let shareOfItem = 100 * (parseInt(tokenQuantityOrdered) / parseInt(targetedItem.itemPublicData.funding.initialTokenAmount))
-            console.log("ROM",shareOfItem)
             let priceOfOrderInStableCoin = parseInt(targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros) * parseInt(tokenQuantityOrdered) 
             let logOfTokenPurchaseForItem = {
               itemId:targetedItem._id,
@@ -515,7 +509,6 @@ const ItemController = {
           message: "Les champs obligatoires ne sont pas tous remplis",
         });
       }
-      console.log(isPublic, typeof(isPublic));
       return ItemModel.create({
         itemPrivateData :{
           status:{
