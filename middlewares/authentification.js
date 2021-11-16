@@ -44,6 +44,29 @@ const Auth = {
     next();
     
   },
+
+  stableCoinUserPayment(req, res, next) {
+    let {priceInStableCoin} = req.body
+    let newStableCoinBalanceOfUser = parseInt(req.user.stableCoin) - parseInt(priceInStableCoin)
+    if (!priceInStableCoin || req.user.stableCoin > priceInStableCoin) {
+      return res
+        .sendStatus(400)
+    }
+    UserModel.findOne(
+      {_id: req.user._id},
+    {$set :  {
+    ["stableCoin"]:newStableCoinBalanceOfUser,
+    },
+    }
+    )
+    .then(()=>{
+      next();
+
+    })
+    .catch((err)=> {
+      res.sendStatus(400)
+    })
+  }
 }
 
 module.exports = Auth

@@ -32,6 +32,9 @@ II.PRIVATE USER CONTROLLERS
   D. STOCK PRIVATE DOCUMENT OF ITEM 
   //stockPrivateDocumentOfItem
 
+  E. BUY TOKEN OF ITEMS IN FUNDING STAGE
+  //buyTokenOfCurrentlyFundingItem
+
 
 III. PRIVATE ADMIN CONTROLLERS
   A. GET ITEM LIST FOR ADMIN
@@ -94,37 +97,19 @@ const ItemController = {
       otherSpecialPerks,
 
       askedPriceByUser,
-
-      /* NOUVELLES KEYS  */
       messageFromUser,
       isCurrentlyRented,
       expectedYearlyIncome,
-
-
-      /* KEYS FOR DEV, WILL BE REMOVED */
-      isPublic,
     } = req.body;
     if (
-      !name /* ||
+      !name ||
       !adress ||
       !city ||
       !postalCode ||
       !description ||
       !typeOfItem  ||
-      !livingArea ||
-      !rooms ||
-      !bedrooms ||
-      !terrace ||
-      !terraceSurface ||
-      !garage ||
-      !garageNumber ||
-      !parking ||
-      !parkingNumber ||
-      !swimmingPool ||
-      !otherSpecialPerks ||
-      !itemPicturesFromUser ||
-      !askedPriceByUser ||
-      !initialTokenAmount  */
+      !askedPriceByUser
+      
     ) {
       return res.status(400).send({
         success: false,
@@ -335,113 +320,155 @@ const ItemController = {
       
       /* II // ******* PRIVATE USER CONTROLLERS **** */
       /* E // BUY TOKENS OF ITEM CURRENTLY FUNDING */
-
+      
+      
       buyTokenOfCurrentlyFundingItem(req, res, next ){
         let { targetItemId, tokenQuantityOrdered, priceInStableCoin } = req.body;
-        if (!targetItemId || !tokenQuantityOrdered || !priceInStableCoin || !req._id){
+        if (!targetItemId || !tokenQuantityOrdered){
           return res
           .status(400)
           .send({
             success: false,
             message: "Erreur",
-            })
+          })
+        }
+        return ItemModel.findOne({_id:targetItemId})
+        .then((targetedItem) => {
+          if (targetedItem === null) {
+            return res
+            .status(400)
+            .send({
+              success:false,
+              message:"Aucun bien ne correspond à l'ID fourni"
+            });
           }
-          return ItemModel.findOne({_id:targetItemId})
-            .then((targetedItem) => {
-              if (targetedItem === null) {
-                return res
-                        .status(400)
-                        .send({
-                          success:false,
-                          message:"Aucun bien ne correspond à l'ID fourni"
-                        });
+          let remainingTokenAfterBuy = parseInt(targetedItem.itemPublicData.funding.remainingAvailableToken) - parseInt(tokenQuantityOrdered)
+          console.log("ROM LOG REMAINING TOKEN ", remainingTokenAfterBuy)
+          /* INSERT CONTROLS IF REMAINING IS BELOW ZERO */
+          return ItemModel.updateOne(
+            {_id:targetItemId},
+            {$set : {
+              ["itemPublicData.funding.remainingAvailableToken"] : remainingTokenAfterBuy,
+            },
+          }
+          )
+          .then(()=> {
+            let tryOUT = targetedItem
+            console.log(tryOUT)
+            let shareOfItem = 100 * (parseInt(tokenQuantityOrdered) / parseInt(targetedItem.itemPublicData.funding.initialTokenAmount))
+            console.log("ROM",shareOfItem)
+            let priceOfOrderInStableCoin = parseInt(targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros) * parseInt(tokenQuantityOrdered) 
+            let logOfTokenPurchaseForItem = {
+              itemId:targetedItem._id,
+              idOfOwner:req._id,
+              userName: `${req.user.firstName} ${req.user.lastName}`,
+              globalTokenIdOfItem: `UDS-${targetItemId._id}-BCF2021-TK`,
+              tokenQuantityOrdered:tokenQuantityOrdered,
+              priceOfOrderInStableCoin:priceOfOrderInStableCoin,
+              globalTokenAmountForThisItem:targetedItem.itemPublicData.funding.initialTokenAmount,
+              initialTokenValue:targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros,
+              fundingDeadlineForItem: targetedItem.itemPublicData.funding.fundingEndDeadlineDate,
+              dateOfPurchase: Date.now(),
+              shareOfItem: shareOfItem,
+              prettyPrintCurrentlyInFundingStage : `L'utilisateur ${req.user.firstName} ${req.user.lastName} à réalisé un pledge de ${tokenQuantityOrdered} token UDS-${targetItemId._id}-BCF2021-TK. Pour un montant total de ${priceOfOrderInStableCoin} stable coins.
+              Cela représente une part de ${shareOfItem} % du total de ${targetedItem.itemPublicData.funding.initialTokenAmount} tokens existants pour le bien portant l'ID ${targetItemId._id}.
+              - Si l'ensemble des token n'est pas acquis avant la cloture de la phase de financement :
+              L'utilisateur ${req.user.firstName} ${req.user.lastName} devra être recrédité de ${priceOfOrderInStableCoin} stable coins.
+              - Si l'ensemble des token est acquis avant la cloture de la phase de financement :
+              Les tokens possédés pourront être vendus et échangés sur le marche UpDownStreet.
+              `,
+              tokenType:"Pledge"
+            }
+            if (!logOfTokenPurchaseForItem){
+              return res.sendStatus(400)
+            }
+            return ItemModel.updateOne(
+              {_id:targetItemId},
+              {$push : {
+                ["itemPrivateData.tokenData.tokenBuyOrdersDuringFunding"] : logOfTokenPurchaseForItem,
+              },
+            }
+            )
+            .then(()=> {
+              let logOfTokenPurchaseForUser = {
+                itemId:targetedItem._id,
+                idOfOwner:req._id,
+                userName: `${req.user.firstName} ${req.user.lastName}`,
+                globalTokenIdOfItem: `UDS-${targetItemId._id}-BCF2021-TK`,
+                tokenQuantityOrdered:tokenQuantityOrdered,
+                priceOfOrderInStableCoin:priceOfOrderInStableCoin,
+                globalTokenAmountForThisItem:targetedItem.itemPublicData.funding.initialTokenAmount,
+                initialTokenValue:targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros,
+                fundingDeadlineForItem: targetedItem.itemPublicData.funding.fundingEndDeadlineDate,
+                dateOfPurchase: Date.now(),
+                shareOfItem: shareOfItem,
+                prettyPrintCurrentlyInFundingStage : ` Monsieur ou Madame ${req.user.firstName} ${req.user.lastName} à réalisé un pledge de ${tokenQuantityOrdered} token UDS-${targetItemId._id}-BCF2021-TK. Pour un montant total de ${priceOfOrderInStableCoin} stable coins.
+                Cela représente une part de ${shareOfItem} % du total de ${targetedItem.itemPublicData.funding.initialTokenAmount} tokens existants pour le bien portant l'ID ${targetItemId._id}.
+                - Si l'ensemble des token n'est pas acquis avant la cloture de la phase de financement :
+                L'utilisateur ${req.user.firstName} ${req.user.lastName} devra être recrédité de ${priceOfOrderInStableCoin} stable coins.
+                - Si l'ensemble des token est acquis avant la cloture de la phase de financement :
+                Les tokens possédés pourront être vendus et échangés sur le marche UpDownStreet.
+                `,
               }
-              let remainingTokenAfterBuy = parseInt(targetedItem.itemPublicData.funding.remainingAvailableToken) - parseInt(tokenQuantityOrdered)
-              console.log("ROM LOG REMAINING TOKEN ", remainingTokenAfterBuy)
-              /* INSERT CONTROLS IF REMAINING IS BELOW ZERO */
-              return ItemModel.updateOne(
-                {_id:targetItemId},
-                {$set : {
-                  ["itemPublicData.funding.remainingAvailableToken"] : remainingTokenAfterBuy,
+              return UserModel.updateOne(
+                {_id:req._id},
+                {$push : {
+                  ["stableCoinLog"] : logOfTokenPurchaseForUser,
                 },
               }
               )
               .then(()=> {
-                let logOfTokenPurchase = {
-                  itemId:targetedItem._id,
-                  quantity:tokenQuantityOrdered,
-                  dateOfPurchase: Date.now(),
-                  initialTokenValue:targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros,
-                  idOfOwner:req._id,
-                  
+                let newStableCoinBalanceOfUser = parseInt(req.user.stableCoin) - parseInt(priceOfOrderInStableCoin)
+
+                return UserModel.updateOne(
+                  {_id:req._id},
+                  {$set : {
+                    ["stableCoin"] : newStableCoinBalanceOfUser,
+                  },
                 }
-                return ItemModel.updateOne(
-                {_id:targetItemId},
-                  {$push : {
-                    ["itemPrivateData.tokenData.tokenBuyOrdersDuringFunding"] : logOfTokenPurchase,
-                        },
-                  }
                 )
                 .then(()=> {
-                  let logOfTokenPurchaseForUser = {
-                    itemdId:targetedItem._id,
-                    quantity:tokenQuantityOrdered,
-                    dateOfPurchase: Date.now(),
-                    initialTokenValue:targetedItem.itemPublicData.funding.initialSingleTokenValueInEuros,
-                  }
-                  return UserModel.updateOne(
-                    {_id:req._id},
-                    {$push : {
-                      ["stableCoinLog"] : logOfTokenPurchaseForUser,
-                    },
-
-
-                    }
-                  )
-                  .then(()=> {
-                    res
-                      .status(200)
-                      .send({
+                  return res 
+                    .status(200)
+                    .send(
+                      {
                         success:true,
-                        message:"Ok"
-                      })
-                  })
+                        message:`Votre achat de token s'est bien déroulé.`
+                      }
+                    )
                 })
-                .then(()=> {
-                  res
-                  .status(200)
-                  .send({
-                    success:true,
-                    message:`La transaction a bien abouti.`
-                  });
-                });
+                .catch((err) => handleServerError(err, res))
               })
+              .catch((err) => handleServerError(err, res))
             })
-            .catch((err) => {
-              res
-                .status(400)
-                .send({
-                  success:false,
-                  message:`Une erreur s'est produite. La transaction n'a pas pu aboutir.`
-                });
-            });
+            .catch((err) => handleServerError(err, res))
+          })
+          .catch((err) => handleServerError(err, res))
+        })
+        .catch((err) => handleServerError(err, res))
       },
+      
+      /* II // ******* PRIVATE USER CONTROLLERS **** */
+      /* F // BUY TOKENS OF ITEM CURRENTLY FUNDING */
 
+      stableCoinUserPayment(req, res, next){
+
+      },
       
       
       /* ************************************************************************** */
       /* ********* ******** PART III : PRIVATE ADMIN CONTROLLERS ******** ********* */
       /* ************************************************************************** */
-    
-/* III // ******* PRIVATE ADMIN CONTROLLERS */
-/* A // GET ITEM LIST FOR ADMIN *** */
-
-    getItemListForAdmin(req, res, next) {
-      return ItemModel.find({}).then((response) => {
-      res.send(response);
-    });
-  },
-
+      
+      /* III // ******* PRIVATE ADMIN CONTROLLERS */
+      /* A // GET ITEM LIST FOR ADMIN *** */
+      
+      getItemListForAdmin(req, res, next) {
+        return ItemModel.find({}).then((response) => {
+          res.send(response);
+        });
+      },
+      
 /* III // ******* PRIVATE ADMIN CONTROLLERS ** */
 /* B // CREATE ITEM BY ADMIN ********* */
   
@@ -482,28 +509,7 @@ const ItemController = {
       isPublic,
       
     } = req.body;
-    if (
-      !name /* ||
-      !adress ||
-      !city ||
-      !postalCode ||
-      !description ||
-      !typeOfItem  ||
-      !livingArea ||
-      !rooms ||
-      !bedrooms ||
-      !terrace ||
-      !terraceSurface ||
-      !garage ||
-      !garageNumber ||
-      !parking ||
-      !parkingNumber ||
-      !swimmingPool ||
-      !otherSpecialPerks ||
-      !itemPicturesFromUser ||
-      !askedPriceByUser ||
-      !initialTokenAmount  */
-      ) {
+    if (!name ) {
         return res.status(400).send({
           success: false,
           message: "Les champs obligatoires ne sont pas tous remplis",
@@ -515,7 +521,7 @@ const ItemController = {
           status:{
             isPublic: isPublic,
             submitedByUser:false,
-            submitedByAdmin:true, 
+            submitedByAdmin: true, 
             isUpForReviewByAdmin: false,
           },
           
@@ -573,7 +579,7 @@ const ItemController = {
             priceInEuros: !priceSetByUpDownStreet ? 0 : priceSetByUpDownStreet,
             initialTokenAmount:!initialTokenAmount ? 0 : initialTokenAmount,
             initialSingleTokenValueInEuros:!priceSetByUpDownStreet || !initialTokenAmount ? 0 : parseInt(priceInEuros) / parseInt(initialTokenAmount),
-            remainingAvailableToken:!priceSetByUpDownStreet || !initialTokenAmount ? 0 : parseInt(priceInEuros) / parseInt(initialTokenAmount),
+            remainingAvailableToken:initialTokenAmount,
             
             fundingOfItemIsInProgress:false,
             fundingStartDate:!fundingStartDate ? "" : fundingStartDate, 

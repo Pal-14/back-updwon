@@ -34,8 +34,11 @@ router.post("/upload-legal-doc", Auth.isUser, UploadMiddleware.uploadItemLegalDo
 /* PUT USER CAN EDIT AN ITEM HE HAS CREATED BUT NOT SUBMITED FOR REVIEW FOR EXAMPLE */
 router.put("/edit-item-by-user", Auth.isUser, ItemController.editItemByUserAnyValue)
 
-router.post("/buy-initial-token", Auth.isUser, ItemController.buyTokenOfCurrentlyFundingItem)
-router.put("/buy-initial-token", Auth.isUser, ItemController.buyTokenOfCurrentlyFundingItem)
+/* SHITTY DEV ROUTE TO BE ABLE TO DEMO */
+router.post("/buy-initial-token", Auth.isUser, Auth.stableCoinUserPayment, ItemController.buyTokenOfCurrentlyFundingItem)
+
+
+router.put("/buy-initial-token", Auth.isUser, /* Auth.stableCoinUserPayment, */ ItemController.buyTokenOfCurrentlyFundingItem)
 
 
 /* **** *** *** ** ** * PRIVATE ADMIN ROUTES * ** ** *** *** **** */
